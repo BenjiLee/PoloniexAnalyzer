@@ -5,6 +5,11 @@ Queries to Poloniex API for Deposit/Withdrawal history and current balances, and
 
 ## Setup
 Create a file called api_keys.txt with your api key on the first line and api secret on the second.
+Example api_keys.txt file
+```
+iAmAnApiKeyGetYoursAtTheirWebsite
+iAmASecretForMyApiKeyDontEverShareThisWithAnyone
+```
 
 ## How to run
 ```
