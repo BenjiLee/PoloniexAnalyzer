@@ -23,6 +23,7 @@ Total BTC=999998
 ----------Current Balances----------
 Total BTC=1000
 -----------Earnings/Loss------------
+Difference=-1602 BTC/$-363000
 Stop trading, you're an idiot
 62.30%
 ```

@@ -11,10 +11,13 @@ def get_api_key_from_file(file_path):
     return key, secret
 
 
-def calculate_percentage(start, current):
+def print_results(start, current):
+    usd_btc_price = PublicApi().return_usd_btc()
     percentage = float("{:.4}".format(current / start * 100))
-
+    btc_sum = current - start
+    usd_sum = "{:.2f}".format(btc_sum * usd_btc_price)
     print "-----------Earnings/Loss------------"
+    print "Difference={} BTC/${}".format(btc_sum, usd_sum)
     if percentage < 100:
         print "Stop trading, you're an idiot"
         print "{}%".format(percentage)
@@ -35,9 +38,9 @@ class main():
     balances = Balances(trading_api.return_complete_balances())
     dw_history = DWHistory(trading_api.return_deposits_withdrawals())
 
-    calculate_percentage(
+    print_results(
         dw_history.get_btc_total(),
-        balances.get_btc_total()
+        balances.get_btc_total(),
     )
 
 

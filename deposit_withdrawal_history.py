@@ -12,9 +12,9 @@ class DWHistory:
         for withdrawal in self.history['withdrawals']:
             withdrawals += float(withdrawal['amount'])
 
-        print "-----Deposit/Withdrawal History-----"
+        print "Deposit/Withdrawal History-----"
         print "Deposits={}".format(deposits)
         print "Withdrawals={}".format(withdrawals)
         total = deposits - withdrawals
-        print "Total BTC={}".format(total)
+        print "Total={}".format(total)
         return total
