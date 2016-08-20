@@ -1,6 +1,7 @@
-import api
-import balances
-import deposit_withdrawal_history
+from balances import Balances
+from deposit_withdrawal_history import DWHistory
+from poloniex_apis.public_api import PublicApi
+from poloniex_apis.trading_api import TradingApi
 
 
 def get_api_key_from_file(file_path):
@@ -30,10 +31,9 @@ def calculate_percentage(start, current):
 
 class main():
     key, secret = get_api_key_from_file(file_path="api_keys.txt")
-    poloniex_api = api.PoloniexApi(key, secret)
-    balances = balances.Balances(poloniex_api.returnCompleteBalances())
-    dw_history = deposit_withdrawal_history.DWHistory(
-        poloniex_api.returnDepositsWithdrawals())
+    trading_api = TradingApi(key, secret)
+    balances = Balances(trading_api.return_complete_balances())
+    dw_history = DWHistory(trading_api.return_deposits_withdrawals())
 
     calculate_percentage(
         dw_history.get_btc_total(),
