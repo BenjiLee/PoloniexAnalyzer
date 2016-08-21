@@ -1,3 +1,6 @@
+# Repo specific ignores
+api_keys.ini
+
 # Byte-compiled / optimized / DLL files
 __pycache__/ *.py[cod] *$py.class
 # C extensions
@@ -37,3 +40,4 @@ celerybeat-schedule
 .spyderproject
 # Rope project settings
 .ropeproject
+
