@@ -8,6 +8,14 @@ import time
 api_url = "https://poloniex.com/tradingApi"
 
 
+class InvalidKeySecretError(Exception):
+    pass
+
+
+class TradingApiError(Exception):
+    pass
+
+
 class TradingApi:
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
@@ -56,6 +64,11 @@ class TradingApi:
         request.add_header("Key", self.api_key)
         request.add_header("Sign", self.__sign_header(post_body))
         request.add_data(post_body)
-        response = urllib2.urlopen(request)
-        json_response = response.read()
-        return json.loads(json_response)
+        response = urllib2.urlopen(request).read()
+        response_dict = json.loads(response)
+        if "error" in response_dict:
+            if response_dict["error"] == "Invalid API key/secret pair.":
+                raise InvalidKeySecretError
+            else:
+                raise TradingApiError(response_dict["error"])
+        return json.loads(response)
