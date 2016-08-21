@@ -25,7 +25,7 @@ def print_results(start, current):
         print "Stop trading, you're an idiot"
         print "{}%".format(percentage)
     elif percentage < 110:
-        print "Put your funds in an index, idiot"
+        print "Put your funds in an index, dumb dumb"
         print "{}%".format(percentage)
     elif percentage < 150:
         print "Not bad"
