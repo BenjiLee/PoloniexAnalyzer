@@ -15,13 +15,27 @@ secret:iAmASecretForMyApiKeyDontEverShareThisWithAnyone
 
 ## How to run
 ```
-python poloniex.py
+>>>python poloniex.py
+
+This analyzes information from your Poloniex account
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -a ACTION, --action ACTION
+                        Script action (see below).
+
+script actions/tasks:
+    GetOverview
+        Returns overall balance and percentage earned/lost
+    CalculateFees
+        Returns the total amount in fees
+
 ```
 
 ## Example output 
 
 ```
->>>python poloniex.py
+>>>python poloniex.py -a GetOverview
 
 -----Deposit/Withdrawal History-----
 Deposits=999999
@@ -33,6 +47,9 @@ Total BTC=1000
 Difference=-1602 BTC/$-363000
 Stop trading, you're an idiot
 62.30%
+
+>>>python poloniex.py -a CalculateFees
+
 ```
 
 ## Want to help out?

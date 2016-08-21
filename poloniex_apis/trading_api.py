@@ -1,3 +1,4 @@
+import ConfigParser
 import hashlib
 import hmac
 import json
@@ -17,26 +18,38 @@ class TradingApiError(Exception):
 
 
 class TradingApi:
-    def __init__(self, api_key, api_secret):
-        self.api_key = api_key
-        self.api_secret = api_secret
+    def __init__(self):
+        self.api_key, self.api_secret = self._get_api_keys_from_file()
 
     def return_complete_balances(self):
-        body = self.__build_body(command="returnCompleteBalances")
-        return self.__call_api(body)
+        body = self._build_body(command="returnCompleteBalances")
+        return self._call_api(body)
 
     def return_deposits_withdrawals(self):
         parameters = {
             'start': '0',
             'end': time.time()
         }
-        body = self.__build_body(
+        body = self._build_body(
             command="returnDepositsWithdrawals",
             parameters=parameters
         )
-        return self.__call_api(body)
+        return self._call_api(body)
 
-    def __build_body(self, command, parameters=None):
+    def return_trade_history(self):
+        parameters = {
+            'currencyPair': 'all',
+            'start': '0',
+            'end': time.time()
+        }
+        body = self._build_body(
+            command="returnTradeHistory",
+            parameters=parameters
+        )
+        return self._call_api(body)
+
+
+    def _build_body(self, command, parameters=None):
         """
         Builds the body for the trading api. Api methods are specified by the
         'command' POST parameter. Additionally, each query must have the 'nonce'
@@ -55,14 +68,16 @@ class TradingApi:
                 body += "&{}={}".format(key, value)
         return body
 
-    def __sign_header(self, post_body):
+
+    def _sign_header(self, post_body):
         hashed = hmac.new(self.api_secret, post_body, hashlib.sha512)
         return hashed.hexdigest()
 
-    def __call_api(self, post_body):
+
+    def _call_api(self, post_body):
         request = urllib2.Request(api_url)
         request.add_header("Key", self.api_key)
-        request.add_header("Sign", self.__sign_header(post_body))
+        request.add_header("Sign", self._sign_header(post_body))
         request.add_data(post_body)
         response = urllib2.urlopen(request).read()
         response_dict = json.loads(response)
@@ -72,3 +87,11 @@ class TradingApi:
             else:
                 raise TradingApiError(response_dict["error"])
         return json.loads(response)
+
+
+    def _get_api_keys_from_file(self):
+        config = ConfigParser.ConfigParser()
+        config.read("api_keys.ini")
+        key = config.get("ApiKeys", "key")
+        secret = config.get("ApiKeys", "secret")
+        return key, secret

@@ -1,50 +1,46 @@
-import ConfigParser
+import argparse
+import textwrap
+from collections import OrderedDict
 
-from balances import Balances
-from deposit_withdrawal_history import DWHistory
-from poloniex_apis.public_api import PublicApi
-from poloniex_apis.trading_api import TradingApi
-
-
-def get_api_key_from_file(file_path):
-    config = ConfigParser.ConfigParser()
-    config.read(file_path)
-    key = config.get("ApiKeys", "key")
-    secret = config.get("ApiKeys", "secret")
-    return key, secret
+from analyzer import Analyzer
 
 
-def print_results(start, current):
-    usd_btc_price = PublicApi().return_usd_btc()
-    percentage = float("{:.4}".format(current / start * 100))
-    btc_sum = current - start
-    usd_sum = "{:.2f}".format(btc_sum * usd_btc_price)
-    print "-----------Earnings/Loss------------"
-    print "Difference={} BTC/${}".format(btc_sum, usd_sum)
-    if percentage < 100:
-        print "Stop trading, you're an idiot"
-        print "{}%".format(percentage)
-    elif percentage < 110:
-        print "Put your funds in an index, dumb dumb"
-        print "{}%".format(percentage)
-    elif percentage < 150:
-        print "Not bad"
-        print "{}%".format(percentage)
-    else:
-        print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
-        print "{}%".format(percentage)
+def main():
+    actions = OrderedDict([
+        ("GetOverview", {
+            'function': Analyzer.get_overview,
+            'help': 'Returns overall balance and percentage earned/lost',
+        }),
+        ("CalculateFees", {
+            'function': Analyzer.calculate_fees,
+            'help': 'Returns the total amount in fees',
+        }),
+    ])
 
-
-class main():
-    key, secret = get_api_key_from_file(file_path="api_keys.ini")
-    trading_api = TradingApi(key, secret)
-    balances = Balances(trading_api.return_complete_balances())
-    dw_history = DWHistory(trading_api.return_deposits_withdrawals())
-
-    print_results(
-        dw_history.get_btc_total(),
-        balances.get_btc_total(),
+    parser = argparse.ArgumentParser(
+        description="This analyzes information from your Poloniex account",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
+    parser.add_argument('-a', '--action', help='Script action (see below).',
+                        default='', required=True)
+
+    parser.epilog = "script actions/tasks:"
+    for action in actions:
+        parser.epilog += "\n    {}".format(action)
+        line_length = 80
+        indents = 8
+        for line in textwrap.wrap(actions[action]['help'],
+                                  line_length - indents):
+            parser.epilog += "\n        {}".format(line)
+
+    args = parser.parse_args()
+
+    if args.action not in actions or args.action is None:
+        parser.print_help()
+        print args.action
+        return
+
+    actions[args.action]['function'](Analyzer())
 
 
 if __name__ == '__main__':
