@@ -5,7 +5,8 @@ Queries to Poloniex API for Deposit/Withdrawal history and current balances, and
 
 ## Setup
 Add your api key and secret in the api_keys.ini file.
-Example api_keys.txt file
+
+Example api_keys.ini file
 ```
 [ApiKeys]
 key:iAmAnApiKeyGetYoursAtTheirWebsite
@@ -34,4 +35,9 @@ Stop trading, you're an idiot
 62.30%
 ```
 
-
+## Want to help out?
+Grab your mechanical keyboard and build up those hand calluses. Use the issues page for any of the following!
+* Request a feature! What kinds of information do you want to know about your trading?
+* Instructions not clear? Complain!
+* Did something crash? Complain!
+* Hard to use? Want a GUI? What kind?!
