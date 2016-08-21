@@ -4,11 +4,12 @@
 Queries to Poloniex API for Deposit/Withdrawal history and current balances, and then returns you percentage earned/lost.
 
 ## Setup
-Create a file called api_keys.txt with your api key on the first line and api secret on the second.
+Add your api key and secret in the api_keys.ini file.
 Example api_keys.txt file
 ```
-iAmAnApiKeyGetYoursAtTheirWebsite
-iAmASecretForMyApiKeyDontEverShareThisWithAnyone
+[ApiKeys]
+key:iAmAnApiKeyGetYoursAtTheirWebsite
+secret:iAmASecretForMyApiKeyDontEverShareThisWithAnyone
 ```
 
 ## How to run

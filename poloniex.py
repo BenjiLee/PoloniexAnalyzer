@@ -1,3 +1,5 @@
+import ConfigParser
+
 from balances import Balances
 from deposit_withdrawal_history import DWHistory
 from poloniex_apis.public_api import PublicApi
@@ -5,9 +7,10 @@ from poloniex_apis.trading_api import TradingApi
 
 
 def get_api_key_from_file(file_path):
-    f = open(file_path, 'r')
-    key = f.readline().rstrip()
-    secret = f.readline().rstrip()
+    config = ConfigParser.ConfigParser()
+    config.read(file_path)
+    key = config.get("ApiKeys", "key")
+    secret = config.get("ApiKeys", "secret")
     return key, secret
 
 
@@ -33,7 +36,7 @@ def print_results(start, current):
 
 
 class main():
-    key, secret = get_api_key_from_file(file_path="api_keys.txt")
+    key, secret = get_api_key_from_file(file_path="api_keys.ini")
     trading_api = TradingApi(key, secret)
     balances = Balances(trading_api.return_complete_balances())
     dw_history = DWHistory(trading_api.return_deposits_withdrawals())
