@@ -50,6 +50,14 @@ Stop trading, you're an idiot
 
 >>>python poloniex.py -a CalculateFees
 
+--------------All Fees--------------
+BTC_NXT=0.0245
+BTC_ETC=0.356
+ETH_ETC=0.01
+BTC_XMR=0.0105
+BTC_DASH=0.0295
+BTC_ETH=0.143
+
 ```
 
 ## Want to help out?
