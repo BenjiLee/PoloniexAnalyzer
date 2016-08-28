@@ -36,7 +36,7 @@ class TradingApi:
 
     def return_complete_balances(self):
         body = self._build_body(command="returnCompleteBalances")
-        return self._call_api(body)
+        return self._call_trading_api(body)
 
     def return_deposits_withdrawals(self):
         parameters = {
@@ -47,7 +47,7 @@ class TradingApi:
             command="returnDepositsWithdrawals",
             parameters=parameters
         )
-        return self._call_api(body)
+        return self._call_trading_api(body)
 
     def return_trade_history(self):
         parameters = {
@@ -59,13 +59,24 @@ class TradingApi:
             command="returnTradeHistory",
             parameters=parameters
         )
-        return self._call_api(body)
+        return self._call_trading_api(body)
 
     def _sign_header(self, post_body):
         hashed = hmac.new(self.api_secret, post_body, hashlib.sha512)
         return hashed.hexdigest()
 
-    def _call_api(self, post_body):
+    def _call_trading_api(self, post_body):
+        """
+        Calls the Poloniex Trading API.
+
+        The Poloniex trading API required two headers with the api key, and a
+        signed POST body signed with the secret.
+
+        :param post_body: (str) POST parameters
+        :return: (dict) Response
+        :raises: InvalidKeySecretError
+        :raises: TradingApiError
+        """
         request = urllib2.Request(api_url)
         request.add_header("Key", self.api_key)
         request.add_header("Sign", self._sign_header(post_body))
@@ -81,6 +92,12 @@ class TradingApi:
 
     @staticmethod
     def _get_api_keys_from_file():
+        """
+        Returns a Poloniex API key/secret pair from a config file
+
+        The TradingApi should be the only API that will be making use of the
+        key/secret.
+        """
         config = ConfigParser.ConfigParser()
         config.read("api_keys.ini")
         key = config.get("ApiKeys", "key")
@@ -95,9 +112,9 @@ class TradingApi:
         POST parameter which requires a greater int on each call.
 
         :type parameters: (dict) Extra parameters
-        :param command: (String) API method
+        :param command: (str) API method
 
-        :return: (String) POST body
+        :return: (str) POST body
         """
         body = "command={}".format(command)
         nonce_int = int(time.time() * 100)

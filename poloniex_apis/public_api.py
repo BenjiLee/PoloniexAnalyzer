@@ -21,10 +21,10 @@ class PublicApi:
 
     def return_ticker(self):
         url = "{}?command=returnTicker".format(api_url)
-        return self.__call_api(url)
+        return self.__call_public_api(url)
 
     @staticmethod
-    def __call_api(url):
+    def __call_public_api(url):
         request = urllib2.Request(url)
         response = urllib2.urlopen(request)
         json_response = response.read()
