@@ -1,3 +1,8 @@
+"""
+Hopefully all the methods in here will be uses for analyzing the data. If that
+stops being true and if I were a good developer (it wouldn't have happened in
+the first place) I would update this documentation.
+"""
 from poloniex_apis.api_models.balances import Balances
 from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
 from poloniex_apis.api_models.trade_history import TradeHistory
@@ -7,7 +12,15 @@ from poloniex_apis.trading_api import TradingApi
 
 
 class Analyzer:
+    """
+    Analyzer for running analysis on given data models :)
+
+    Probably does not need to be a class at the time of writing, but it makes
+    calling all these methods from other files more readable.
+    """
+
     def get_overview(self):
+        # TODO Should this take in the data models or call it itself
         balances = Balances(TradingApi().return_complete_balances())
         dw_history = DWHistory(TradingApi().return_deposits_withdrawals())
 
@@ -34,7 +47,9 @@ class Analyzer:
             print "{}%".format(percentage)
 
     def calculate_fees(self):
+        # TODO Should this take in the data models or call it itself
         trade_history = TradeHistory(TradingApi().return_trade_history())
+        print trade_history.history
         all_fees = trade_history.get_all_fees()
 
         print "--------------All Fees--------------"

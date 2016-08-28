@@ -1,3 +1,10 @@
+"""
+Poloniex's Trading API. Not all trading api methods are implemented and will
+probably not be added unless it will actually be used. In order for these API
+methods to work, an API key and secret must be configured. Not all methods need
+the "Trading Enabled" option on their API key.
+"""
+
 import ConfigParser
 import hashlib
 import hmac
@@ -10,10 +17,16 @@ api_url = "https://poloniex.com/tradingApi"
 
 
 class InvalidKeySecretError(Exception):
+    """
+    Exception raised for an invalid API key/secret pair.
+    """
     pass
 
 
 class TradingApiError(Exception):
+    """
+    Exception raised for a general TradingApi error.
+    """
     pass
 
 
@@ -48,8 +61,34 @@ class TradingApi:
         )
         return self._call_api(body)
 
+    def _sign_header(self, post_body):
+        hashed = hmac.new(self.api_secret, post_body, hashlib.sha512)
+        return hashed.hexdigest()
 
-    def _build_body(self, command, parameters=None):
+    def _call_api(self, post_body):
+        request = urllib2.Request(api_url)
+        request.add_header("Key", self.api_key)
+        request.add_header("Sign", self._sign_header(post_body))
+        request.add_data(post_body)
+        response = urllib2.urlopen(request).read()
+        response_dict = json.loads(response)
+        if "error" in response_dict:
+            if response_dict["error"] == "Invalid API key/secret pair.":
+                raise InvalidKeySecretError
+            else:
+                raise TradingApiError(response_dict["error"])
+        return json.loads(response)
+
+    @staticmethod
+    def _get_api_keys_from_file():
+        config = ConfigParser.ConfigParser()
+        config.read("api_keys.ini")
+        key = config.get("ApiKeys", "key")
+        secret = config.get("ApiKeys", "secret")
+        return key, secret
+
+    @staticmethod
+    def _build_body(command, parameters=None):
         """
         Builds the body for the trading api. Api methods are specified by the
         'command' POST parameter. Additionally, each query must have the 'nonce'
@@ -67,31 +106,3 @@ class TradingApi:
             for key, value in parameters.iteritems():
                 body += "&{}={}".format(key, value)
         return body
-
-
-    def _sign_header(self, post_body):
-        hashed = hmac.new(self.api_secret, post_body, hashlib.sha512)
-        return hashed.hexdigest()
-
-
-    def _call_api(self, post_body):
-        request = urllib2.Request(api_url)
-        request.add_header("Key", self.api_key)
-        request.add_header("Sign", self._sign_header(post_body))
-        request.add_data(post_body)
-        response = urllib2.urlopen(request).read()
-        response_dict = json.loads(response)
-        if "error" in response_dict:
-            if response_dict["error"] == "Invalid API key/secret pair.":
-                raise InvalidKeySecretError
-            else:
-                raise TradingApiError(response_dict["error"])
-        return json.loads(response)
-
-
-    def _get_api_keys_from_file(self):
-        config = ConfigParser.ConfigParser()
-        config.read("api_keys.ini")
-        key = config.get("ApiKeys", "key")
-        secret = config.get("ApiKeys", "secret")
-        return key, secret
