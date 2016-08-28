@@ -23,6 +23,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -a ACTION, --action ACTION
                         Script action (see below).
+  -l LOOP, --loop LOOP  Run every n seconds
 
 script actions/tasks:
     GetOverview

@@ -2,6 +2,8 @@ import argparse
 import textwrap
 from collections import OrderedDict
 
+import time
+
 from analyzer import Analyzer
 
 
@@ -23,6 +25,8 @@ def main():
     )
     parser.add_argument('-a', '--action', help='Script action (see below).',
                         default='', required=True)
+    parser.add_argument('-l', '--loop', help='Run every n seconds',
+                        default='', required=False)
 
     parser.epilog = "script actions/tasks:"
     for action in actions:
@@ -40,7 +44,12 @@ def main():
         print args.action
         return
 
-    actions[args.action]['function'](Analyzer())
+    if not args.loop:
+        actions[args.action]['function'](Analyzer())
+    else:
+        while True:
+            actions[args.action]['function'](Analyzer())
+            time.sleep(int(args.loop))
 
 
 if __name__ == '__main__':
