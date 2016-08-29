@@ -17,6 +17,10 @@ def main():
             'function': Analyzer.calculate_fees,
             'help': 'Returns the total amount in fees',
         }),
+        ("TradingAnalysis", {
+            'function': Analyzer.trading_analysis,
+            'help': '',
+        }),
     ])
 
     parser = argparse.ArgumentParser(

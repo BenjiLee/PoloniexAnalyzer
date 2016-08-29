@@ -56,8 +56,10 @@ class Analyzer:
         for stock, fees in all_fees.iteritems():
             print "{}={}".format(stock, fees)
 
-    def calculate_fees(self):
+    def trading_analysis(self):
         # TODO Should this take in the data models or call it itself
         trade_history = TradeHistory(TradingApi().return_trade_history())
-        group_trades_by_time = trade_history.group_trades_by_time()
-        dev_util.dict_to_file(group_trades_by_time)
+        group_trades_by_time = trade_history.am_i_winning()
+
+
+        dev_util.dict_to_file(group_trades_by_time) # TOOD remove
