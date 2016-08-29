@@ -3,6 +3,7 @@ Hopefully all the methods in here will be uses for analyzing the data. If that
 stops being true and if I were a good developer (it wouldn't have happened in
 the first place) I would update this documentation.
 """
+import dev_util
 from poloniex_apis.api_models.balances import Balances
 from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
 from poloniex_apis.api_models.trade_history import TradeHistory
@@ -49,9 +50,14 @@ class Analyzer:
     def calculate_fees(self):
         # TODO Should this take in the data models or call it itself
         trade_history = TradeHistory(TradingApi().return_trade_history())
-        print trade_history.history
         all_fees = trade_history.get_all_fees()
 
         print "--------------All Fees--------------"
         for stock, fees in all_fees.iteritems():
             print "{}={}".format(stock, fees)
+
+    def calculate_fees(self):
+        # TODO Should this take in the data models or call it itself
+        trade_history = TradeHistory(TradingApi().return_trade_history())
+        group_trades_by_time = trade_history.group_trades_by_time()
+        dev_util.dict_to_file(group_trades_by_time)
