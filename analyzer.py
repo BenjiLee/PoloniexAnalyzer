@@ -9,7 +9,7 @@ from poloniex_apis.api_models.balances import Balances
 from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
 from poloniex_apis.api_models.trade_history import TradeHistory
 
-from poloniex_apis.public_api import PublicApi
+from poloniex_apis.public_api import return_usd_btc
 from poloniex_apis.trading_api import TradingApi
 
 
@@ -21,7 +21,7 @@ def get_overview():
     start = dw_history.get_btc_total()
     current = balances.get_btc_total()
 
-    usd_btc_price = PublicApi().return_usd_btc()
+    usd_btc_price = return_usd_btc()
     percentage = float("{:.4}".format(current / start * 100))
     btc_sum = current - start
     usd_sum = "{:.2f}".format(btc_sum * usd_btc_price)
