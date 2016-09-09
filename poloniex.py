@@ -4,17 +4,17 @@ from collections import OrderedDict
 
 import time
 
-from analyzer import Analyzer
+from analyzer import get_overview, calculate_fees
 
 
 def main():
     actions = OrderedDict([
         ("GetOverview", {
-            'function': Analyzer.get_overview,
+            'function': get_overview,
             'help': 'Returns overall balance and percentage earned/lost',
         }),
         ("CalculateFees", {
-            'function': Analyzer.calculate_fees,
+            'function': calculate_fees,
             'help': 'Returns the total amount in fees',
         }),
     ])
@@ -45,10 +45,10 @@ def main():
         return
 
     if not args.loop:
-        actions[args.action]['function'](Analyzer())
+        actions[args.action]['function']()
     else:
         while True:
-            actions[args.action]['function'](Analyzer())
+            actions[args.action]['function']()
             time.sleep(int(args.loop))
 
 
