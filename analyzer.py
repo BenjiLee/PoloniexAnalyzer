@@ -18,36 +18,66 @@ def get_overview():
     balances = Balances(trading_api.return_complete_balances())
     dw_history = DWHistory(trading_api.return_deposits_withdrawals())
 
-    start = dw_history.get_btc_total()
+    balance, deposits, withdrawals = dw_history.get_btc_dw_history()
     current = balances.get_btc_total()
 
     usd_btc_price = return_usd_btc()
-    percentage = float("{:.4}".format(current / start * 100))
-    btc_sum = current - start
-    usd_sum = "{:.2f}".format(btc_sum * usd_btc_price)
-    print "----------Earnings/Losses-----------"
-    print "Difference={} BTC/${}".format(btc_sum, usd_sum)
-    if percentage < 100:
+    balance_percentage = float("{:.4}".format(current / balance * 100))
+    btc_balance_sum = current - balance
+    usd_balance_sum = "{:.2f}".format(btc_balance_sum * usd_btc_price)
+
+    # TODO This is really WET
+    print "---Earnings/Losses Against Balance--"
+    print "{} BTC/${}".format(btc_balance_sum, usd_balance_sum)
+    if balance_percentage < 100:
         print "Stop trading, you're an idiot"
-        print "{}%".format(percentage)
-    elif percentage < 110:
+        print "{}%".format(balance_percentage)
+    elif balance_percentage < 110:
         print "Put your funds in an index, dumb dumb"
-        print "{}%".format(percentage)
-    elif percentage < 150:
+        print "{}%".format(balance_percentage)
+    elif balance_percentage < 150:
         print "Not bad"
-        print "{}%".format(percentage)
-    elif percentage < 175:
+        print "{}%".format(balance_percentage)
+    elif balance_percentage < 175:
         print "You belong here"
-        print "{}%".format(percentage)
-    elif percentage < 200:
+        print "{}%".format(balance_percentage)
+    elif balance_percentage < 200:
         print "Like striking crypto-oil"
-        print "{}%".format(percentage)
-    elif percentage < 250:
+        print "{}%".format(balance_percentage)
+    elif balance_percentage < 250:
         print "On your way to becoming a bitcoin millionaire"
-        print "{}%".format(percentage)
+        print "{}%".format(balance_percentage)
     else:
         print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
-        print "{}%".format(percentage)
+        print "{}%".format(balance_percentage)
+
+    deposits_percentage = float("{:.4}".format(current / deposits * 100))
+    btc_deposits_sum = current - deposits
+    usd_deposits_sum = "{:.2f}".format(btc_deposits_sum * usd_btc_price)
+
+    print "--Earnings/Losses Against Deposits--"
+    print "{} BTC/${}".format(btc_deposits_sum, usd_deposits_sum)
+    if deposits_percentage < 100:
+        print "Stop trading, you're an idiot"
+        print "{}%".format(deposits_percentage)
+    elif deposits_percentage < 110:
+        print "Put your funds in an index, dumb dumb"
+        print "{}%".format(deposits_percentage)
+    elif deposits_percentage < 150:
+        print "Not bad"
+        print "{}%".format(deposits_percentage)
+    elif deposits_percentage < 175:
+        print "You belong here"
+        print "{}%".format(deposits_percentage)
+    elif deposits_percentage < 200:
+        print "Like striking crypto-oil"
+        print "{}%".format(deposits_percentage)
+    elif deposits_percentage < 250:
+        print "On your way to becoming a bitcoin millionaire"
+        print "{}%".format(deposits_percentage)
+    else:
+        print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
+        print "{}%".format(deposits_percentage)
 
 
 def calculate_fees():

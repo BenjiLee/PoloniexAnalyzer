@@ -2,7 +2,7 @@ class DWHistory:
     def __init__(self, history):
         self.history = history
 
-    def get_btc_total(self):
+    def get_btc_dw_history(self):
         deposits = 0
         withdrawals = 0
 
@@ -15,6 +15,6 @@ class DWHistory:
         print "-----Deposit/Withdrawal History-----"
         print "Deposits={}".format(deposits)
         print "Withdrawals={}".format(withdrawals)
-        total = deposits - withdrawals
-        print "Total={}".format(total)
-        return total
+        balance = deposits - withdrawals
+        print "Total={}".format(balance)
+        return balance, deposits, withdrawals
