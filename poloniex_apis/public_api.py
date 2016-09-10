@@ -17,10 +17,10 @@ def return_usd_btc():
 
 def return_ticker():
     url = "{}?command=returnTicker".format(api_url)
-    return __call_public_api(url)
+    return _call_public_api(url)
 
 
-def __call_public_api(url):
+def _call_public_api(url):
     request = urllib2.Request(url)
     response = urllib2.urlopen(request)
     json_response = response.read()

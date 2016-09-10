@@ -36,6 +36,15 @@ def get_overview():
     elif percentage < 150:
         print "Not bad"
         print "{}%".format(percentage)
+    elif percentage < 175:
+        print "You belong here"
+        print "{}%".format(percentage)
+    elif percentage < 200:
+        print "Like striking crypto-oil"
+        print "{}%".format(percentage)
+    elif percentage < 250:
+        print "On your way to becoming a bitcoin millionaire"
+        print "{}%".format(percentage)
     else:
         print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
         print "{}%".format(percentage)
