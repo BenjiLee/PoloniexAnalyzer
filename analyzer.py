@@ -10,13 +10,13 @@ from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
 from poloniex_apis.api_models.trade_history import TradeHistory
 
 from poloniex_apis.public_api import return_usd_btc
-from poloniex_apis.trading_api import TradingApi
+import poloniex_apis.trading_api as trading_api
 
 
 def get_overview():
     # TODO Should this take in the data models or call it itself
-    balances = Balances(TradingApi().return_complete_balances())
-    dw_history = DWHistory(TradingApi().return_deposits_withdrawals())
+    balances = Balances(trading_api.return_complete_balances())
+    dw_history = DWHistory(trading_api.return_deposits_withdrawals())
 
     start = dw_history.get_btc_total()
     current = balances.get_btc_total()
@@ -43,8 +43,7 @@ def get_overview():
 
 def calculate_fees():
     # TODO Should this take in the data models or call it itself
-    trade_history = TradeHistory(TradingApi().return_trade_history())
-    print trade_history.history
+    trade_history = TradeHistory(trading_api.return_trade_history())
     all_fees = trade_history.get_all_fees()
 
     print "--------------All Fees--------------"
