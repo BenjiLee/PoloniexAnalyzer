@@ -4,17 +4,21 @@ from collections import OrderedDict
 
 import time
 
-from analyzer import get_overview, calculate_fees
+import analyzer
 
 
 def main():
     actions = OrderedDict([
         ("GetOverview", {
-            'function': get_overview,
+            'function': analyzer.get_overview,
             'help': 'Returns overall balance and percentage earned/lost',
         }),
+        ("GetDetailedOverview", {
+            'function': analyzer.get_detailed_overview,
+            'help': 'Returns detailed overall balance and percentage earned/lost',
+        }),
         ("CalculateFees", {
-            'function': calculate_fees,
+            'function': analyzer.calculate_fees,
             'help': 'Returns the total amount in fees',
         }),
     ])
