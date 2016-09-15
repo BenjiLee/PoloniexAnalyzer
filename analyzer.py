@@ -6,6 +6,7 @@ stops being true and if I were a good developer (it wouldn't have happened in
 the first place) I would update this documentation.
 """
 import poloniex_apis.trading_api as trading_api
+import utils
 from poloniex_apis import public_api
 from poloniex_apis.api_models.balances import Balances
 from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
@@ -108,11 +109,17 @@ def get_detailed_overview():
             if ticker_sum > 0.000000001:
                 current_btc_sum = float(ticker_price.get_price_for_ticker(ticker)) * ticker_sum
                 total_btc = btc_sum - current_btc_sum
-                total_usd = float("{:.4}".format(ticker_sum * ticker_price.get_price_for_ticker(ticker) * ticker_price.get_price_for_ticker("USDT_BTC")))
+                total_usd = float("{:.4}".format(total_btc * ticker_price.get_price_for_ticker("USDT_BTC")))
                 print "--------------{}----------------".format(ticker)
                 print "You invested {} BTC for {} {}/{} BTC".format(btc_sum, ticker_sum, ticker.split("_")[1], current_btc_sum)
                 print "If you sold it all at the current price (assuming enough sell orders)"
+
+                if total_btc > 0:
+                    print utils.bcolors.RED,
+                else:
+                    print utils.bcolors.GREEN,
                 print "{} BTC/{} USD".format(total_btc, total_usd)
+                print utils.bcolors.END_COLOR,
 
     return current
 
