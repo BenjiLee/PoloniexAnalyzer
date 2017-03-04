@@ -21,6 +21,10 @@ def main():
             'function': analyzer.calculate_fees,
             'help': 'Returns the total amount in fees',
         }),
+        ("GetChangeOverTime", {
+            'function': analyzer.get_change_over_time,
+            'help': 'Public function: Returns percent change over a series of time periods for currencies exceeding a volume threshold'
+        })
     ])
 
     parser = argparse.ArgumentParser(

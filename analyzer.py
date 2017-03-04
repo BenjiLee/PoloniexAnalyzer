@@ -5,6 +5,10 @@ Hopefully all the methods in here will be uses for analyzing the data. If that
 stops being true and if I were a good developer (it wouldn't have happened in
 the first place) I would update this documentation.
 """
+import operator
+
+import time
+
 import poloniex_apis.trading_api as trading_api
 import utils
 from poloniex_apis import public_api
@@ -111,7 +115,8 @@ def get_detailed_overview():
                 total_btc = current_btc_sum - btc_sum
                 total_usd = float("{:.4}".format(total_btc * ticker_price.get_price_for_ticker("USDT_BTC")))
                 print "--------------{}----------------".format(ticker)
-                print "You invested {} BTC for {} {}/{} BTC".format(btc_sum, ticker_sum, ticker.split("_")[1], current_btc_sum)
+                print "You invested {} BTC for {} {}/{} BTC".format(btc_sum, ticker_sum, ticker.split("_")[1],
+                                                                    current_btc_sum)
                 print "If you sold it all at the current price (assuming enough sell orders)"
 
                 if total_btc < 0:
@@ -132,3 +137,53 @@ def calculate_fees():
     print "--------------All Fees--------------"
     for stock, fees in all_fees.iteritems():
         print "{}={}".format(stock, fees)
+
+
+def get_change_over_time():
+    """
+    Returns a list of currencies whose volume is over the threshold.
+    :return:
+    """
+    threshold = 1000
+    currency_list = []
+
+    volume_data = public_api.return_24_hour_volume()
+    for item in volume_data:
+        if item.startswith('BTC'):
+            if float(volume_data.get(item).get('BTC')) > threshold:
+                currency_list.append(item)
+
+    currencies = {}
+    for currency_pair in currency_list:
+        currencies[currency_pair] = float(volume_data.get(currency_pair).get(u'BTC'))
+    sorted_currencies = sorted(currencies.items(), key=operator.itemgetter(1), reverse=True)
+
+    period = 300
+    print "Change over time for BTC traded currencies with volume > 1000 BTC"
+    for currency in sorted_currencies:
+        now = int(time.time())
+        last_week = now - 604800
+        history = public_api.return_chart_data(
+            period=period,
+            currency_pair=currency[0],
+            start=last_week,
+        )
+        print "Currency: {}, Volume: {}".format(currency[0], currency[1])
+        print "  1H: {}, 24H: {}, 2D: {}, 3D: {}, 4D: {}, 1W: {}".format(
+            _to_percent_change(history[-1]['close']/history[-(3600/period-1)]['close']),
+            _to_percent_change(history[-1]['close']/history[-(86400/period-1)]['close']),
+            _to_percent_change(history[-1]['close']/history[-(172800/period-1)]['close']),
+            _to_percent_change(history[-1]['close']/history[-(259200/period-1)]['close']),
+            _to_percent_change(history[-1]['close']/history[-(345600/period-1)]['close']),
+            _to_percent_change(history[-1]['close']/history[-(604800/period-1)]['close']),
+        )
+        time.sleep(1)
+
+
+def _to_percent_change(number):
+    if not isinstance(number, float):
+        number = float(number)
+    return "{:.2f}%".format(number * 100 - 100)
+
+
+
