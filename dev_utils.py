@@ -12,3 +12,10 @@ def dict_to_file(dict_input):
     f = open('dump.json', 'w')
     f.write(simplejson.dumps(simplejson.loads(result), indent=4, sort_keys=True))
     f.close()
+
+
+def file_to_dict():
+    f = open('dump.json', 'r')
+    string = f.read()
+    f.close()
+    return simplejson.loads(string)
