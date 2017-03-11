@@ -139,7 +139,11 @@ def calculate_fees():
     print "--------------All Fees--------------"
     for stock, fees in all_fees.iteritems():
         print "{}={}".format(stock, fees)
-
+    print "--------------All Fees--------------"
+    total=0
+    for stock, fees in all_fees.iteritems():
+        total +=fees
+    print "Total={}".format(total)
 
 def get_change_over_time():
     """
@@ -205,10 +209,10 @@ def get_account_balance():
         balance += item[1]
         values.append(balance)
 
-
     plot.plot_date(dates, values)
-
     plot.plot(dates, values)
+    plot.axes().grid(color='k', linestyle='-', linewidth=.1)
+    plot.xticks(rotation=30)
     plot.show()
     # print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(1347517370))
 
