@@ -7,8 +7,10 @@ the first place) I would update this documentation.
 """
 import operator
 
+import matplotlib.pyplot as plot
+import matplotlib.dates as mpldate
 import time
-
+import dev_utils
 import poloniex_apis.trading_api as trading_api
 import utils
 from poloniex_apis import public_api
@@ -178,6 +180,38 @@ def get_change_over_time():
             _to_percent_change(history[-1]['close']/history[-(604800/period-1)]['close']),
         )
         time.sleep(1)
+
+
+def get_account_balance():
+    trade_history = dev_utils.file_to_dict('trade_history.txt')
+    dw_history = dev_utils.file_to_dict('dw_history.txt')
+
+    flat_dw_list = []
+    for deposit in dw_history["deposits"]:
+        flat_dw_list.append((deposit["timestamp"], float(deposit["amount"])))
+    for withdrawal in dw_history["withdrawals"]:
+        flat_dw_list.append((withdrawal["timestamp"], -float(withdrawal["amount"])))
+    flat_dw_list.sort(key=lambda tup: tup[0])
+    for seconds, dw in flat_dw_list:
+        print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(seconds)), dw
+
+    dates = []
+    values = []
+    balance = 0
+    for item in flat_dw_list:
+        # dates.append(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(item[0])))
+        dates.append(mpldate.epoch2num(item[0]))
+        # dates.append(item[0])
+        balance += item[1]
+        values.append(balance)
+
+
+    plot.plot_date(dates, values)
+
+    plot.plot(dates, values)
+    plot.show()
+    # print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(1347517370))
+
 
 
 def _to_percent_change(number):
