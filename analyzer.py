@@ -6,7 +6,7 @@ stops being true and if I were a good developer (it wouldn't have happened in
 the first place) I would update this documentation.
 """
 import operator
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 import matplotlib.pyplot as plot
 import matplotlib.dates as mpldate
@@ -189,12 +189,41 @@ def get_change_over_time():
 
 
 def get_account_balance():
-    # dev_utils.dict_to_file(trading_api.return_trade_history(), 'trade_history.txt')
+    dev_utils.dict_to_file(trading_api.return_trade_history(), 'trade_history.txt')
     trade_history = dev_utils.file_to_dict('trade_history.txt')
     dw_history = dev_utils.file_to_dict('dw_history.txt')
 
+    name = "BTC_SDC"
+    dash = trade_history[name]
+    ordered_dash = sorted(dash, key=lambda x: _get_epoch(x['date']))
+    dash_balance = 0
+    bitcoin_balance = 0
+    dates = []
+    values = []
+    for trade in ordered_dash:
+        if trade["type"] == "buy":
+            dash_balance += float(trade["amount"])*(1-float(trade["fee"]))
+            bitcoin_balance -= float(trade["amount"])*float(trade["rate"])
+        else:
+            dash_balance -= float(trade["amount"])
+            bitcoin_balance += float(trade["amount"])*float(trade["rate"])*(1-float(trade["fee"]))
+        dates.append(mpldate.epoch2num(_get_epoch(trade['date'])))
+        values.append(dash_balance*float(trade["rate"]) + bitcoin_balance)
+
+    graph_data_dict = {
+        'x': dates,
+        'y': values,
+        'colors': None,
+        'title': "Trade history for {}".format(name),
+        'x-label': "Date",
+        'y-label': "BTC"}
+    _plot_graph(graph_data_dict)
 
 
+def get_account_balance2():
+    # dev_utils.dict_to_file(trading_api.return_trade_history(), 'trade_history.txt')
+    trade_history = dev_utils.file_to_dict('trade_history.txt')
+    dw_history = dev_utils.file_to_dict('dw_history.txt')
 
     master_dict = defaultdict(int)
     sorted_dw = _get_sorted_dw_history(dw_history)
@@ -202,12 +231,17 @@ def get_account_balance():
     for date, value in sorted_dw:
         master_dict[date] += value
     non_btc_dict = {}
+
+
     for currency, trades in trade_history.iteritems():
+        last_dash = 0
         for trade in trades:
             epoch = _get_epoch(trade["date"])
             value = float(trade["total"])
             if trade["type"] == "sell":
-                value = -float(value)
+                value = -value
+            else:
+                value *= 1 - float(trade["fee"])
 
             if currency.startswith("BTC"):
                 master_dict[epoch] += value
@@ -217,6 +251,7 @@ def get_account_balance():
                 else:
                     non_btc_dict[currency] = defaultdict(int)
                     non_btc_dict[currency][epoch] += value
+            last_dash = value
 
 
     for currency, data in non_btc_dict.iteritems():
@@ -272,11 +307,17 @@ def _plot_graph(graph_data_dict):
     x = graph_data_dict['x']
     y = graph_data_dict['y']
     colors = graph_data_dict['colors']
+    title = graph_data_dict['title']
+    x_label = graph_data_dict['x-label']
+    y_label = graph_data_dict['y-label']
 
     plot.plot_date(x, y, marker=None)
     plot.plot(x, y)
     plot.scatter(x, y, color=colors)
     plot.axes().grid(color='k', linestyle='-', linewidth=.1)
+    plot.title(title)
+    plot.xlabel(x_label)
+    plot.ylabel(y_label)
     plot.xticks(rotation=30)
     plot.show()
 
