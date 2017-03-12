@@ -38,6 +38,7 @@ def return_chart_data(period, currency_pair, start, end=9999999999):
     """
     url = "{api_url}?command=returnChartData&currencyPair={currency_pair}&start={start}&end={end}&period={period}".format(
         api_url=api_url, currency_pair=currency_pair, start=start, end=end, period=period)
+
     return _call_public_api(url)
 
 
