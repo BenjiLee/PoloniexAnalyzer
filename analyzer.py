@@ -6,12 +6,11 @@ stops being true and if I were a good developer (it wouldn't have happened in
 the first place) I would update this documentation.
 """
 import operator
-from collections import defaultdict, OrderedDict
-
-import matplotlib.pyplot as plot
-import matplotlib.dates as mpldate
 import time
+from collections import defaultdict
+
 import dev_utils
+import matplotlib.dates as mpldate
 import poloniex_apis.trading_api as trading_api
 import utils
 from poloniex_apis import public_api
@@ -20,6 +19,7 @@ from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
 from poloniex_apis.api_models.ticker_price import TickerPrice
 from poloniex_apis.api_models.trade_history import TradeHistory
 from poloniex_apis.public_api import return_usd_btc
+from utils import _get_epoch, _to_percent_change, _plot_graph
 
 
 def get_overview():
@@ -178,12 +178,12 @@ def get_change_over_time():
         )
         print "Currency: {}, Volume: {}".format(currency[0], currency[1])
         print "  1H: {}, 24H: {}, 2D: {}, 3D: {}, 4D: {}, 1W: {}".format(
-            _to_percent_change(history[-1]['close']/history[-(3600/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(86400/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(172800/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(259200/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(345600/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(604800/period-1)]['close']),
+            _to_percent_change(history[-1]['close'] / history[-(3600 / period - 1)]['close']),
+            _to_percent_change(history[-1]['close'] / history[-(86400 / period - 1)]['close']),
+            _to_percent_change(history[-1]['close'] / history[-(172800 / period - 1)]['close']),
+            _to_percent_change(history[-1]['close'] / history[-(259200 / period - 1)]['close']),
+            _to_percent_change(history[-1]['close'] / history[-(345600 / period - 1)]['close']),
+            _to_percent_change(history[-1]['close'] / history[-(604800 / period - 1)]['close']),
         )
         time.sleep(1)
 
@@ -193,7 +193,11 @@ def get_account_balance():
     trade_history = dev_utils.file_to_dict('trade_history.txt')
     dw_history = dev_utils.file_to_dict('dw_history.txt')
 
-    name = "BTC_SDC"
+    currency = raw_input("Currency?")
+
+
+
+    name = "BTC_DASH"
     dash = trade_history[name]
     ordered_dash = sorted(dash, key=lambda x: _get_epoch(x['date']))
     dash_balance = 0
@@ -277,12 +281,6 @@ def get_account_balance2():
     _plot_graph(graph_data_dict)
 
 
-def _get_epoch(date_string):
-    pattern = '%Y-%m-%d %H:%M:%S'
-    epoch = int(time.mktime(time.strptime(date_string, pattern)))
-    return epoch
-
-
 def _get_sorted_dw_history(dw_history):
     flat_dw_list = []
     for deposit in dw_history["deposits"]:
@@ -301,31 +299,6 @@ def _get_sorted_dw_history(dw_history):
         values.append(balance)
 
     return dates, values
-
-
-def _plot_graph(graph_data_dict):
-    x = graph_data_dict['x']
-    y = graph_data_dict['y']
-    colors = graph_data_dict['colors']
-    title = graph_data_dict['title']
-    x_label = graph_data_dict['x-label']
-    y_label = graph_data_dict['y-label']
-
-    plot.plot_date(x, y, marker=None)
-    plot.plot(x, y)
-    plot.scatter(x, y, color=colors)
-    plot.axes().grid(color='k', linestyle='-', linewidth=.1)
-    plot.title(title)
-    plot.xlabel(x_label)
-    plot.ylabel(y_label)
-    plot.xticks(rotation=30)
-    plot.show()
-
-
-def _to_percent_change(number):
-    if not isinstance(number, float):
-        number = float(number)
-    return "{:.2f}%".format(number * 100 - 100)
 
 
 

@@ -1,0 +1,9 @@
+pip
+setuptools
+pyparsing
+autobahn[twisted]
+pyopenssl
+service_identity
+Cython
+kivy
+pygame
