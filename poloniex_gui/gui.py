@@ -64,7 +64,7 @@ class TickerApp(App):
         self.col1_change.text = self._get_color(difference) + str.format('{0:.8f}', difference)
         if self.previous != 0:
             self.difference += difference
-            self.col1_total_change.text = self._get_color(self.difference) + str.format('{0:.7f}', self.difference)
+            self.col1_total_change.text = self._get_color(self.difference) + str.format('{0:.8f}', self.difference)
             raw_percent = 100 * ((float(current) / (float(current) - self.difference)) - 1)
             formatted_percent = str.format('{0:.3f}%', 100 * ((float(current) / (float(current) - self.difference)) - 1))
             self.col1_percent.text = self._get_color(raw_percent) + formatted_percent
@@ -109,23 +109,27 @@ class TickerApp(App):
         self.col1 = BoxLayout(orientation='vertical')
 
         def col1_on_enter(instance):
-            print('User pressed enter in', instance)
-
+            self.difference = 0
+            self.previous = 0
+            self.col1_current.text = 0
+            self.col1_total_change.text = str(0)
+            self.col1_percent.text = "0%"
+            self.col1_change.text = str(0)
         self.col1_ticker_input = TextInput(text='BTC_DASH', multiline=False)
         self.col1_ticker_input.bind(on_text_validate=col1_on_enter)
 
         self.col1_current_title = Label(text='Current:')
-        self.col1_current = Label(text='...')
+        self.col1_current = Label(text='...', font_size='20sp')
         self.col1_change_title = Label(text='Change:')
-        self.col1_change = Label(text='...', markup=True)
+        self.col1_change = Label(text='...', markup=True, font_size='20sp')
         self.col1_total_change_title = Label(text='Total Change:')
-        self.col1_total_change = Label(text='...', markup=True)
+        self.col1_total_change = Label(text='...', markup=True, font_size='20sp')
         self.col1_percent_title = Label(text='Percent Change:')
-        self.col1_percent = Label(text='...', markup=True)
+        self.col1_percent = Label(text='...', markup=True, font_size='20sp')
 
         def callback_col1_difference(instance, value):
-            self.col1_difference.text = str(self.difference)
-
+            self.difference = 0
+            self.col1_total_change.text = str(0)
         self.col1_reset_button = Button(text='Reset %', font_size=14)
         self.col1_reset_button.bind(state=callback_col1_difference)
 
