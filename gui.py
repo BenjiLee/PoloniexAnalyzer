@@ -111,7 +111,7 @@ class TickerApp(App):
         def col1_on_enter(instance):
             self.difference = 0
             self.previous = 0
-            self.col1_current.text = 0
+            self.col1_current.text = str(0)
             self.col1_total_change.text = str(0)
             self.col1_percent.text = "0%"
             self.col1_change.text = str(0)
