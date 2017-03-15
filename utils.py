@@ -12,7 +12,7 @@ class bcolors:
 def _get_epoch(date_string):
     pattern = '%Y-%m-%d %H:%M:%S'
     epoch = int(time.mktime(time.strptime(date_string, pattern)))
-    return epoch - 14400
+    return epoch - 14400 - 14400
 
 
 def _to_percent_change(number):

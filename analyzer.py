@@ -193,11 +193,7 @@ def get_account_balance():
     trade_history = dev_utils.file_to_dict('trade_history.txt')
     dw_history = dev_utils.file_to_dict('dw_history.txt')
 
-    currency = raw_input("Currency?")
-
-
-
-    name = "BTC_DASH"
+    name = raw_input("Currency?")
     dash = trade_history[name]
     ordered_dash = sorted(dash, key=lambda x: _get_epoch(x['date']))
     dash_balance = 0

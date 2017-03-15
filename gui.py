@@ -120,7 +120,7 @@ class TickerApp(App):
 
         self.col1_current_title = Label(text='Current:')
         self.col1_current = Label(text='...', font_size='20sp')
-        self.col1_change_title = Label(text='Change:')
+        self.col1_change_title = Label(text='Last Change:')
         self.col1_change = Label(text='...', markup=True, font_size='20sp')
         self.col1_total_change_title = Label(text='Total Change:')
         self.col1_total_change = Label(text='...', markup=True, font_size='20sp')
@@ -130,6 +130,8 @@ class TickerApp(App):
         def callback_col1_difference(instance, value):
             self.difference = 0
             self.col1_total_change.text = str(0)
+            self.col1_percent.text = "0%"
+
         self.col1_reset_button = Button(text='Reset %', font_size=14)
         self.col1_reset_button.bind(state=callback_col1_difference)
 
