@@ -189,7 +189,7 @@ def get_change_over_time():
 
 
 def get_account_balance():
-    dev_utils.dict_to_file(trading_api.return_trade_history(), 'trade_history.txt')
+    # dev_utils.dict_to_file(trading_api.return_trade_history(), 'trade_history.txt')
     trade_history = dev_utils.file_to_dict('trade_history.txt')
     dw_history = dev_utils.file_to_dict('dw_history.txt')
 
@@ -200,6 +200,7 @@ def get_account_balance():
     bitcoin_balance = 0
     dates = []
     values = []
+    print "Meow"
     for trade in ordered_dash:
         if trade["type"] == "buy":
             dash_balance += float(trade["amount"])*(1-float(trade["fee"]))
@@ -209,6 +210,7 @@ def get_account_balance():
             bitcoin_balance += float(trade["amount"])*float(trade["rate"])*(1-float(trade["fee"]))
         dates.append(mpldate.epoch2num(_get_epoch(trade['date'])))
         values.append(dash_balance*float(trade["rate"]) + bitcoin_balance)
+    print "Meow2"
 
     graph_data_dict = {
         'x': dates,

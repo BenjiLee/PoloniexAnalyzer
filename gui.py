@@ -1,3 +1,5 @@
+import time
+
 from kivy.app import App
 
 from kivy.support import install_twisted_reactor
@@ -5,6 +7,8 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
+from poloniex_apis import public_api
+from twisted.internet import task
 
 install_twisted_reactor()
 
@@ -26,6 +30,8 @@ class TickerApp(App):
 
         self.previous = 0
         self.difference = 0
+        self.ticker = ""
+        self.volume = ""
 
     def build(self):
         self.session = None
@@ -34,6 +40,22 @@ class TickerApp(App):
             realm=u"realm1",
             extra=dict(ui=self))
         runner.run(PoloniexComponent, start_reactor=False)
+
+        def update_volume():
+            if self.ticker:
+                self.volume = public_api.return_chart_data(
+                    period=1800,
+                    currency_pair=self.ticker,
+                    start=time.time()-1801,
+                    end=time.time()
+                )
+                try:
+                    self.col1_volume.text = str.format('{0:.1f}', self.volume[0]["volume"])
+                except Exception as e:
+                    print self.ticker
+                    print self.volume
+        self.l = task.LoopingCall(update_volume)
+        self.l.start(60)
 
         # setup the Kivy UI
         root = self.setup_gui()
@@ -78,27 +100,12 @@ class TickerApp(App):
         else:
             return "[color=eeeeee]"
 
-    # def _popluate_gui(self, msg):
-    #     if msg[u"data"][u"type"] in [u'sell', u'buy']:
-    #         current = msg[u"data"][u'rate']
-    #         difference = (float(current) - float(self.previous))
-    #         text = "{} : {}".format(
-    #             current,
-    #             str.format('{0:.7f}', difference)
-    #         )
-    #         self.column2_ticker.text = text
-    #         if self.previous != 0:
-    #             self.difference += difference
-    #             percent = str.format('{0:.3f}%', 100 * ((float(current) / (float(current) - self.difference)) - 1))
-    #             self.column2_difference.text = str.format('{0:.7f}', self.difference) + ":" + percent
-    #         self.previous = current
-
     import kivy
     kivy.require('1.9.0')
 
     from kivy.config import Config
-    Config.set('graphics', 'width', '200')
-    Config.set('graphics', 'height', '300')
+    Config.set('graphics', 'width', '175')
+    Config.set('graphics', 'height', '350')
 
     def _setup_layout(self):
         self._setup_col1()
@@ -109,6 +116,7 @@ class TickerApp(App):
         self.col1 = BoxLayout(orientation='vertical')
 
         def col1_on_enter(instance):
+            self.ticker = self.col1_ticker_input.text
             self.difference = 0
             self.previous = 0
             self.col1_current.text = str(0)
@@ -116,6 +124,7 @@ class TickerApp(App):
             self.col1_percent.text = "0%"
             self.col1_change.text = str(0)
         self.col1_ticker_input = TextInput(text='BTC_DASH', multiline=False)
+        self.ticker = self.col1_ticker_input.text
         self.col1_ticker_input.bind(on_text_validate=col1_on_enter)
 
         self.col1_current_title = Label(text='Current:')
@@ -126,6 +135,8 @@ class TickerApp(App):
         self.col1_total_change = Label(text='...', markup=True, font_size='20sp')
         self.col1_percent_title = Label(text='Percent Change:')
         self.col1_percent = Label(text='...', markup=True, font_size='20sp')
+        self.col1_volume_title = Label(text='30-Minute Volume:')
+        self.col1_volume = Label(text='...', markup=True, font_size='20sp')
 
         def callback_col1_difference(instance, value):
             self.difference = 0
@@ -144,6 +155,8 @@ class TickerApp(App):
         self.col1.add_widget(self.col1_total_change)
         self.col1.add_widget(self.col1_percent_title)
         self.col1.add_widget(self.col1_percent)
+        self.col1.add_widget(self.col1_volume_title)
+        self.col1.add_widget(self.col1_volume)
         self.col1.add_widget(self.col1_reset_button)
 
 
