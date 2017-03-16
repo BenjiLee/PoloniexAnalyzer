@@ -45,22 +45,7 @@ class TickerApp(App):
             realm=u"realm1",
             extra=dict(ui=self))
         runner.run(PoloniexComponent, start_reactor=False)
-
-        def update_volume():
-            self.volume = public_api.return_chart_data(
-                period=1800,
-                currency_pair=self.col1_ticker_input.text,
-                start=time.time() - 1801,
-                end=time.time()
-            )
-            try:
-                self.col1_volume.text = str.format('{0:.1f}', self.volume[0]["volume"])
-            except KeyError as e:
-                self.col1_volume.text = "Invalid Ticker"
-
-        self.l = task.LoopingCall(update_volume)
         root = self.setup_gui()
-        self.l.start(60)
         return root
 
     def setup_gui(self):
@@ -76,44 +61,47 @@ class TickerApp(App):
     def update_gui(self, *msg, **kwargs):
         for tick in msg:
             if tick == self.col1_ticker_input.text:
-                current = msg[1]
-                difference = (float(current) - float(self.previous1))
-                self.col1_current.text = current.strip("\n")
+                current = float(msg[1])
+                difference = current - self.previous1
+                self.col1_current.text = str(current)
                 self.col1_change.text = self._get_color(difference) + str.format('{0:.8f}', difference)
                 if self.previous1 != 0:
                     self.difference1 += difference
                     self.col1_total_change.text = self._get_color(self.difference1) + str.format('{0:.8f}', self.difference1)
-                    raw_percent = 100 * ((float(current) / (float(current) - self.difference1)) - 1)
+                    raw_percent = 100 * ((current / (current - self.difference1)) - 1)
                     formatted_percent = str.format('{0:.3f}%',
-                                                   100 * ((float(current) / (float(current) - self.difference1)) - 1))
+                                                   100 * ((current / (current - self.difference1)) - 1))
                     self.col1_percent.text = self._get_color(raw_percent) + formatted_percent
                 self.previous1 = current
+                self.col1_volume.text = str.format('{0:.2f}', float(self.col1_volume.text) + abs(current))
             elif tick == self.col2_ticker_input.text:
-                current = msg[1]
-                difference = (float(current) - float(self.previous2))
-                self.col2_current.text = current.strip("\n")
+                current = float(msg[1])
+                difference = current - self.previous2
+                self.col2_current.text = str(current)
                 self.col2_change.text = self._get_color(difference) + str.format('{0:.8f}', difference)
                 if self.previous2 != 0:
                     self.difference2 += difference
                     self.col2_total_change.text = self._get_color(self.difference1) + str.format('{0:.8f}', self.difference2)
-                    raw_percent = 100 * ((float(current) / (float(current) - self.difference2)) - 1)
+                    raw_percent = 100 * ((current / (current - self.difference2)) - 1)
                     formatted_percent = str.format('{0:.3f}%',
-                                                   100 * ((float(current) / (float(current) - self.difference2)) - 1))
+                                                   100 * ((current / (current - self.difference2)) - 1))
                     self.col2_percent.text = self._get_color(raw_percent) + formatted_percent
                 self.previous2 = current
+                self.col2_volume.text = str.format('{0:.2f}', float(self.col2_volume.text) + abs(current))
             elif tick == self.col3_ticker_input.text:
-                current = msg[1]
-                difference = (float(current) - float(self.previous3))
-                self.col3_current.text = current.strip("\n")
+                current = float(msg[1])
+                difference = current - self.previous3
+                self.col3_current.text = str(current)
                 self.col3_change.text = self._get_color(difference) + str.format('{0:.8f}', difference)
                 if self.previous3 != 0:
                     self.difference3 += difference
                     self.col3_total_change.text = self._get_color(self.difference3) + str.format('{0:.8f}', self.difference3)
-                    raw_percent = 100 * ((float(current) / (float(current) - self.difference3)) - 1)
+                    raw_percent = 100 * ((current / (current - self.difference3)) - 1)
                     formatted_percent = str.format('{0:.3f}%',
-                                                   100 * ((float(current) / (float(current) - self.difference3)) - 1))
+                                                   100 * ((current / (current - self.difference3)) - 1))
                     self.col3_percent.text = self._get_color(raw_percent) + formatted_percent
                 self.previous3 = current
+                self.col3_volume.text = str.format('{0:.2f}', float(self.col3_volume.text) + abs(current))
 
     @staticmethod
     def _get_color(number):
@@ -146,28 +134,29 @@ class TickerApp(App):
             self.col1_total_change.text = str(0)
             self.col1_percent.text = "0%"
             self.col1_change.text = str(0)
-            self.l.reset()
+            self.col1_volume.text = str(0)
 
         self.col1_ticker_input = TextInput(text='BTC_DASH', multiline=False)
         self.col1_ticker_input.bind(on_text_validate=col1_on_enter)
 
         self.col1_current_title = Label(text='Current:')
-        self.col1_current = Label(text='...', font_size='18sp')
+        self.col1_current = Label(text='0', font_size='18sp')
         self.col1_change_title = Label(text='Last Change:')
-        self.col1_change = Label(text='...', markup=True, font_size='18sp')
+        self.col1_change = Label(text='0', markup=True, font_size='18sp')
         self.col1_total_change_title = Label(text='Total Change:')
-        self.col1_total_change = Label(text='...', markup=True, font_size='18sp')
+        self.col1_total_change = Label(text='0', markup=True, font_size='18sp')
         self.col1_percent_title = Label(text='Percent Change:')
-        self.col1_percent = Label(text='...', markup=True, font_size='18sp')
-        self.col1_volume_title = Label(text='Last 30m Volume:')
-        self.col1_volume = Label(text='...', markup=True, font_size='18sp')
+        self.col1_percent = Label(text='0', markup=True, font_size='18sp')
+        self.col1_volume_title = Label(text='Volume:')
+        self.col1_volume = Label(text='0', markup=True, font_size='18sp')
 
         def callback_col1_difference(instance, value):
             self.difference1 = 0
             self.col1_total_change.text = str(0)
             self.col1_percent.text = "0%"
+            self.col1_volume.text = str(0)
 
-        self.col1_reset_button = Button(text='Reset %', font_size=14)
+        self.col1_reset_button = Button(text='Reset', font_size=14)
         self.col1_reset_button.bind(state=callback_col1_difference)
 
         self.col1.add_widget(self.col1_ticker_input)
@@ -193,28 +182,29 @@ class TickerApp(App):
             self.col2_total_change.text = str(0)
             self.col2_percent.text = "0%"
             self.col2_change.text = str(0)
-            self.l.reset()
+            self.col2_volume.text = str(0)
 
         self.col2_ticker_input = TextInput(text='BTC_ETH', multiline=False)
         self.col2_ticker_input.bind(on_text_validate=col2_on_enter)
 
         self.col2_current_title = Label(text='Current:')
-        self.col2_current = Label(text='...', font_size='18sp')
+        self.col2_current = Label(text='0', font_size='18sp')
         self.col2_change_title = Label(text='Last Change:')
-        self.col2_change = Label(text='...', markup=True, font_size='18sp')
+        self.col2_change = Label(text='0', markup=True, font_size='18sp')
         self.col2_total_change_title = Label(text='Total Change:')
-        self.col2_total_change = Label(text='...', markup=True, font_size='18sp')
+        self.col2_total_change = Label(text='0', markup=True, font_size='18sp')
         self.col2_percent_title = Label(text='Percent Change:')
-        self.col2_percent = Label(text='...', markup=True, font_size='18sp')
-        self.col2_volume_title = Label(text='Last 30m Volume:')
-        self.col2_volume = Label(text='...', markup=True, font_size='18sp')
+        self.col2_percent = Label(text='0', markup=True, font_size='18sp')
+        self.col2_volume_title = Label(text='Volume:')
+        self.col2_volume = Label(text='0', markup=True, font_size='18sp')
 
         def callback_col2_difference(instance, value):
             self.difference2 = 0
             self.col2_total_change.text = str(0)
             self.col2_percent.text = "0%"
+            self.col2_volume.text = str(0)
 
-        self.col2_reset_button = Button(text='Reset %', font_size=14)
+        self.col2_reset_button = Button(text='Reset', font_size=14)
         self.col2_reset_button.bind(state=callback_col2_difference)
 
         self.col2.add_widget(self.col2_ticker_input)
@@ -240,28 +230,29 @@ class TickerApp(App):
             self.col3_total_change.text = str(0)
             self.col3_percent.text = "0%"
             self.col3_change.text = str(0)
-            self.l.reset()
+            self.col3_volume.text = str(0)
 
         self.col3_ticker_input = TextInput(text='USDT_BTC', multiline=False)
         self.col3_ticker_input.bind(on_text_validate=col3_on_enter)
 
         self.col3_current_title = Label(text='Current:')
-        self.col3_current = Label(text='...', font_size='18sp')
+        self.col3_current = Label(text='0', font_size='18sp')
         self.col3_change_title = Label(text='Last Change:')
-        self.col3_change = Label(text='...', markup=True, font_size='18sp')
+        self.col3_change = Label(text='0', markup=True, font_size='18sp')
         self.col3_total_change_title = Label(text='Total Change:')
-        self.col3_total_change = Label(text='...', markup=True, font_size='18sp')
+        self.col3_total_change = Label(text='0', markup=True, font_size='18sp')
         self.col3_percent_title = Label(text='Percent Change:')
-        self.col3_percent = Label(text='...', markup=True, font_size='18sp')
-        self.col3_volume_title = Label(text='Last 30m Volume:')
-        self.col3_volume = Label(text='...', markup=True, font_size='18sp')
+        self.col3_percent = Label(text='0', markup=True, font_size='18sp')
+        self.col3_volume_title = Label(text='Volume:')
+        self.col3_volume = Label(text='0', markup=True, font_size='18sp')
 
         def callback_col3_difference(instance, value):
             self.difference3 = 0
             self.col3_total_change.text = str(0)
             self.col3_percent.text = "0%"
+            self.col3_volume.text = str(0)
 
-        self.col3_reset_button = Button(text='Reset %', font_size=14)
+        self.col3_reset_button = Button(text='Reset', font_size=14)
         self.col3_reset_button.bind(state=callback_col3_difference)
 
         self.col3.add_widget(self.col3_ticker_input)
