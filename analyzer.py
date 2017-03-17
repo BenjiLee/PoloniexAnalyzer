@@ -9,6 +9,8 @@ import operator
 import time
 from collections import defaultdict
 
+import math
+
 import dev_utils
 import matplotlib.dates as mpldate
 import poloniex_apis.trading_api as trading_api
@@ -200,7 +202,6 @@ def get_account_balance():
     bitcoin_balance = 0
     dates = []
     values = []
-    print "Meow"
     for trade in ordered_dash:
         if trade["type"] == "buy":
             dash_balance += float(trade["amount"])*(1-float(trade["fee"]))
@@ -299,4 +300,26 @@ def _get_sorted_dw_history(dw_history):
     return dates, values
 
 
+def calculate_graph_stats():
+    _calculate_graph_stats(period_length=300, periods=50)
 
+
+def _calculate_graph_stats(period_length, periods):
+    thing = public_api.return_chart_data(
+        period=period_length,
+        currency_pair="BTC_DASH",
+        start=time.time() - periods * period_length - 1,
+        end=time.time(),
+    )
+
+    total = 0
+    for item in thing:
+        total += float(item['close'])
+    simple_moving_average = total/periods
+
+    total = 0
+    for item in thing:
+        total += (float(item['close']) - simple_moving_average)**2
+    standard_deviation = math.sqrt(total/periods)
+
+    return simple_moving_average, standard_deviation
