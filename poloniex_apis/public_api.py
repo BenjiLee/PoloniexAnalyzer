@@ -7,8 +7,6 @@ probably not be added unless it will actually be used.
 import json
 import urllib2
 
-import dev_utils
-
 api_url = "https://poloniex.com/public"
 
 
