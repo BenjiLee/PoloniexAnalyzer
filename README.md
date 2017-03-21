@@ -5,7 +5,8 @@ Queries to Poloniex API for Deposit/Withdrawal history and current balances, and
 
 ## Setup
 Some scripts do not require an api key. For script that require an api key...
-Add your api key and secret in the api_keys.ini file.
+Copy the `api_keys.ini.example` file as `api_keys.ini` and add your api key 
+and secret.
 
 Example api_keys.ini file
 ```
@@ -45,15 +46,15 @@ script actions/tasks:
 >>> python poloniex.py -a GetOverview
 
 -----Deposit/Withdrawal History-----
-Deposits=999999
-Withdrawals=998394
-Total BTC=999998
+Deposits=25.1500546
+Withdrawals=5.150214
+Total=19.9998406
 ----------Current Balances----------
-Total BTC=1000
------------Earnings/Loss------------
-Difference=-1602 BTC/$-363000
-Stop trading, you're an idiot
-62.30%
+Total BTC=17.73191744
+---Earnings/Losses Against Balance--
+-2.26792316 BTC/$-2533.27
+Stop trading!
+88.66%
 
 >>> python poloniex.py -a CalculateFees
 
