@@ -22,8 +22,9 @@ from poloniex_apis.public_api import return_usd_btc
 def get_overview():
     balances = Balances(trading_api.return_complete_balances())
     dw_history = DWHistory(trading_api.return_deposits_withdrawals())
-
-    balance, deposits, withdrawals = dw_history.get_btc_dw_history()
+    deposits, withdrawals = dw_history.get_dw_history()
+    utils.print_dw_history(deposits, withdrawals)
+    balance = dw_history.get_btc_balance(public_api.return_ticker())
     current = balances.get_btc_total()
 
     usd_btc_price = return_usd_btc()
