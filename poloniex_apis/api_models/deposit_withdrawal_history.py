@@ -24,12 +24,12 @@ class DWHistory:
         balance = 0
         for deposit, amount in self.deposits.iteritems():
             if deposit != u'BTC':
-                balance += amount * ticker_data[u'BTC_' + deposit]['last']
+                balance += amount * float(ticker_data[u'BTC_' + deposit]['last'])
             else:
                 balance += amount
         for withdrawal, amount in self.withdrawals.iteritems():
             if withdrawal != u'BTC':
-                balance -= amount * ticker_data[u'BTC_' + withdrawal]['last']
+                balance -= amount * float(ticker_data[u'BTC_' + withdrawal]['last'])
             else:
                 balance -= amount
         return balance
