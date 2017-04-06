@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+import os, sys
 """
 Analisador para execuções analíticas sobre deterinados modelos de dados :)
 
