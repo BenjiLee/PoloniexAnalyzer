@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+import os, sys
 class TradeHistory:
     def __init__(self, history):
         self.history = history

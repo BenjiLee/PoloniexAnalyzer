@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+import os, sys
 class Balances:
     def __init__(self, all_balances):
         self.all_balances = all_balances
