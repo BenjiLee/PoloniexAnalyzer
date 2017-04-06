@@ -1,21 +1,22 @@
-# PoloniexAnalyzer
+# PoloniexAnalyzer - Versão Brasileira
 
-## What does this do?
-Queries to Poloniex API for Deposit/Withdrawal history and current balances, and then returns you percentage earned/lost.
+## Esta é uma tradução da versão original do BenjiLee. Thank you for your great work and help, Benji! A ideia é que possamos utilizar melhores estratégias para que a emoção fique cada vez mais de lado, para uma melhor tomada de decisão nas negociações. As tecnologias da informação e comunicação estão cada vez maispresentes, contudo, temos que saber tirar proveito dela.
 
-## Setup
-Some scripts do not require an api key. For script that require an api key...
-Copy the `api_keys.ini.example` file as `api_keys.ini` and add your api key 
-and secret.
+## O que esse programa faz?
+Faz requisições ao API da Poloniex para histórico de Depósitos/Retiradas e saldo atual, para então retornar a porcentagem ganha ou perdida.
 
-Example api_keys.ini file
+## Configuração
+Alguns scripts não requerem uma chave API. Para aqueles que necessitem...
+Copie o arquivo `api_keys.ini.example` como `api_keys.ini` e insira sua chave api e a chave secreta.
+
+Exemplo de um arquivo api_keys.ini
 ```
 [ApiKeys]
 key:iAmAnApiKeyGetYoursAtTheirWebsite
 secret:iAmASecretForMyApiKeyDontEverShareThisWithAnyone
 ```
 
-## How to run
+## Como executar
 ```
 >>>python poloniex.py
 
@@ -40,7 +41,7 @@ script actions/tasks:
 
 ```
 
-## Example output 
+## Exemplo de Resultado 
 
 ```
 >>> python poloniex.py -a GetOverview
@@ -101,9 +102,9 @@ Currency: BTC_XRP, Volume: 1004.84598195
 
 ```
 
-## Want to help out?
-Grab your mechanical keyboard and build up those hand calluses. Use the issues page for any of the following!
-* Request a feature! What kinds of information do you want to know about your trading?
-* Instructions not clear? Complain!
-* Did something crash? Complain!
-* Hard to use? Want a GUI? What kind?!
+## Quer ajudar?
+Pegue seu teclado mecânico e crie alguns calos nessas mãos. Use a página de problemas (issues) para qualquer uma das coisas abaixo!
+* Solicitar uma funcionalidade! Que tipo de informação você quer saber sobre suas negociações?
+* As instruções não estão claras? Reclame!
+* Algo deu errado? Reclame!
+* Difícil de usar? Quer uma GUI? De que tipo?!
