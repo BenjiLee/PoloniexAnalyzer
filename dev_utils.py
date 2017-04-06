@@ -1,5 +1,5 @@
 """
-Utility methods for development
+Métodos utilitários para desenvolvimento
 """
 import simplejson
 
