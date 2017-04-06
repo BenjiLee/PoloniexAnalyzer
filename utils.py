@@ -5,9 +5,9 @@ class bcolors:
 
 
 def print_dw_history(deposits, withdrawals):
-    print "-----Deposit/Withdrawal History-----"
+    print "-----Histórico de Depósitos/Retiradas-----"
     print "------------------------------------"
-    print "--Currency=Deposit-Withdrawal=Total-"
+    print "--Moeda=Depósitos-Retiradas=Total-"
     for currency, deposit in deposits.iteritems():
         withdrawal = withdrawals[currency] if currency in withdrawals else 0
         print "{}={}-{}={}".format(currency, deposit, withdrawal, deposit - withdrawal)
