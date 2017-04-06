@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+import os, sys
 """
 API Privada para Trades na Poloniex. Nem todos os métodos de api privados estão implementados e provavelemente
 não serão adicionados à menos que sejam realmente utilizados. Para usar esses métodos API
