@@ -44,7 +44,7 @@ def get_overview():
         print "Nada mal"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 175:
-        print "você está em casa"
+        print "Você está em casa"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 200:
         print "Mastermind"
