@@ -1,8 +1,8 @@
 """
-Public API for Poloniex
+API Pública para Poloniex
 
-Poloniex's Public API. Not all public api methods are implemented and will
-probably not be added unless it will actually be used.
+API Pública para Poloniex. Nem todos os métodos de api pública estão implementados e provavelemente
+não serão adicionados à menos que sejam realmente utilizados.
 """
 import json
 import urllib2
@@ -27,12 +27,12 @@ def return_24_hour_volume():
 
 def return_chart_data(period, currency_pair, start, end=9999999999):
     """
-    Returns the candlestick chart data.
+    Retorna os dados do gráfico de candlesticks.
 
-    :param period: (candlestick period in seconds; valid values are 300, 900, 1800, 7200, 14400, and 86400)
-    :param currency_pair: The currency pair e.g. BTC_XMR
-    :param start: UNIX Timestamp for start date
-    :param end: UNIX Timestamp for end date
+    :param period: (período de candlestick em segundos, vaores válidos são 300, 900, 1800, 7200, 14400 e 86400)
+    :param currency_pair: O par em questão. Ex: BTC_XMR
+    :param start: UNIX Timestamp para data de início
+    :param end: UNIX Timestamp para data de término
     """
     url = "{api_url}?command=returnChartData&currencyPair={currency_pair}&start={start}&end={end}&period={period}".format(
         api_url=api_url, currency_pair=currency_pair, start=start, end=end, period=period)
