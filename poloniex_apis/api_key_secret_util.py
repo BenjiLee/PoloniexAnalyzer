@@ -3,7 +3,7 @@ import ConfigParser
 
 def get_api_key():
     """
-    Returns a Poloniex API key from the config file
+    Retorna uma chave API da Poloniex do arquivo de configuração
     """
     config = ConfigParser.ConfigParser()
     config.read("api_keys.ini")
@@ -13,7 +13,7 @@ def get_api_key():
 
 def get_api_secret():
     """
-    Returns a Poloniex API secret from the config file
+    Retorna um segredo de API da Poloniex do arquivo de configuração
     """
     config = ConfigParser.ConfigParser()
     config.read("api_keys.ini")
