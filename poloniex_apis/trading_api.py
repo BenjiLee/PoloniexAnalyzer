@@ -1,8 +1,8 @@
 """
-Poloniex's Trading API. Not all trading api methods are implemented and will
-probably not be added unless it will actually be used. In order for these API
-methods to work, an API key and secret must be configured. Not all methods need
-the "Trading Enabled" option on their API key.
+API Privada para Trades na Poloniex. Nem todos os métodos de api privados estão implementados e provavelemente
+não serão adicionados à menos que sejam realmente utilizados. Para usar esses métodos API
+uma chave API e um segredo devem estar configurados. Nem todos os métodos precisam
+da opção "Habilitar Trade" na chave API.
 """
 
 import hashlib
@@ -18,14 +18,14 @@ api_url = "https://poloniex.com/tradingApi"
 
 class InvalidKeySecretError(Exception):
     """
-    Exception raised for an invalid API key/secret pair.
+    Exceção causada por um par inválido de chave API/segredo.
     """
     pass
 
 
 class TradingApiError(Exception):
     """
-    Exception raised for a general TradingApi error.
+    Exceção cauada por um erro geral do TradingApi.
     """
     pass
 
@@ -67,10 +67,10 @@ def _sign_header(post_body):
 
 def _call_trading_api(post_body):
     """
-    Calls the Poloniex Trading API.
+    Chama o API de Trading da Poloniex.
 
-    The Poloniex trading API required two headers with the api key, and a
-    signed POST body signed with the secret.
+    Esse API requer dois cabeçalhos com a chave api e um body com POST assinado
+    dentro do segredo.
 
     :param post_body: (str) POST parameters
     :return: (dict) Response
@@ -84,7 +84,7 @@ def _call_trading_api(post_body):
     response = urllib2.urlopen(request).read()
     response_dict = json.loads(response)
     if "error" in response_dict:
-        if response_dict["error"] == "Invalid API key/secret pair.":
+        if response_dict["error"] == "Chave API/segredo inválidos.":
             raise InvalidKeySecretError
         else:
             raise TradingApiError(response_dict["error"])
@@ -93,9 +93,9 @@ def _call_trading_api(post_body):
 
 def _build_body(command, parameters=None):
     """
-    Builds the body for the trading api. Api methods are specified by the
-    'command' POST parameter. Additionally, each query must have the 'nonce'
-    POST parameter which requires a greater int on each call.
+    Constrói o corpo do Trading API. Os métodos API são especificados pelo 
+    parâmentro 'command' do POST. Adicionalmente, cada requisição eve ter o parâmetro
+    POST 'nonce' que  requer um int maior em cada .
 
     :type parameters: (dict) Extra parameters
     :param command: (str) API method
