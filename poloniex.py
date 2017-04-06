@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: latin-1 -*-
+import os, sys
 import argparse
 import textwrap
 from collections import OrderedDict
