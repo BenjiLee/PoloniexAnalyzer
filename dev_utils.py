@@ -1,21 +1,14 @@
 """
 Utility methods for development
 """
-import simplejson
+import json
 
 
 def dict_to_file(dict_input):
-    string_input = str(dict_input)
-    result = string_input.replace("u'", '"')
-    result = result.replace("'", '"')
-
-    f = open('dump.json', 'w')
-    f.write(simplejson.dumps(simplejson.loads(result), indent=4, sort_keys=True))
-    f.close()
+    with open('dump.json', 'w') as f:
+        json.dump(dict_input, f, indent=4, sort_keys=True)
 
 
 def file_to_dict():
-    f = open('dump.json', 'r')
-    string = f.read()
-    f.close()
-    return simplejson.loads(string)
+    with open('dump.json', 'r') as f:
+        return json.load(f)
