@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+import os, sys
 """
-Analyzer for running analysis on given data models :)
+Analisador para execuções analíticas sobre deterinados modelos de dados :)
 
-Hopefully all the methods in here will be uses for analyzing the data. If that
-stops being true and if I were a good developer (it wouldn't have happened in
-the first place) I would update this documentation.
+Espero que todos os métodos aqui sejam usados para a análise dos dados. Se isso
+deixar de ser verdade e se eu fosse um bom desenvolvedordeveloper (isso não aconteceria,
+em primeiro lugar) eu atualizaria a documentação.
 """
 import operator
 
@@ -32,37 +35,37 @@ def get_overview():
     btc_balance_sum = current - balance
     usd_balance_sum = "{:.2f}".format(btc_balance_sum * usd_btc_price)
 
-    print "---Earnings/Losses Against Balance--"
+    print "---Ganhos/Perdas vs Balanço--"
     print "{} BTC/${}".format(btc_balance_sum, usd_balance_sum)
     if balance_percentage < 100:
-        print "Stop trading!"
+        print "Pare de fazer trading!"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 110:
-        print "Still worse than an index."
+        print "Ainda pior que um índice."
         print "{}%".format(balance_percentage)
     elif balance_percentage < 150:
-        print "Not bad"
+        print "Nada mal"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 175:
-        print "You belong here"
+        print "Você está em casa"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 200:
-        print "Like striking crypto-oil"
+        print "Mastermind"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 250:
-        print "On your way to becoming a bitcoin millionaire"
+        print "À caminho de tornar-se um milionário do bitcoin"
         print "{}%".format(balance_percentage)
     else:
-        print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
+        print "Criptomoedas podem ficar pesadas, então você deveria enviá-las à mim para ficarem seguras!"
         print "{}%".format(balance_percentage)
 
 
 def get_detailed_overview():
     ticker_price = TickerPrice(public_api.return_ticker())
     trade_history = trading_api.return_trade_history()
-    print "Warning, if you made non BTC trades, for example, ETH to ETC, some"
-    print "of the values may look unusual. Since non BTC trades have not been"
-    print "calculated in."
+    print "Aviso, se você fez trades não BTC, como ETH/ETC por exemplo, alguns"
+    print "dos valore podem parecer estranhos, já que nenhum trade de BTC foi"
+    print "devidamente calculado."
     for ticker in trade_history:
         if ticker.startswith("BTC_"):
             current = list(reversed(trade_history[ticker]))
@@ -71,8 +74,8 @@ def get_detailed_overview():
                 if trade['type'] == 'buy':
                     btc_sum += float(trade["total"])
                 else:
-                    # For some reason, the total for sells do not include the
-                    # fee so we include it here.
+                    # Por alguma razão, o total de vendas nçao inclui a
+                    # taxa, então a incluímos aqui.
                     btc_sum -= (float(trade["total"]) * (1 - float(trade["fee"])))
 
             ticker_sum = 0
@@ -87,9 +90,9 @@ def get_detailed_overview():
                 total_btc = current_btc_sum - btc_sum
                 total_usd = float("{:.4}".format(total_btc * ticker_price.get_price_for_ticker("USDT_BTC")))
                 print "--------------{}----------------".format(ticker)
-                print "You invested {} BTC for {} {}/{} BTC".format(btc_sum, ticker_sum, ticker.split("_")[1],
+                print "Você investiu {} BTC por {} {}/{} BTC".format(btc_sum, ticker_sum, ticker.split("_")[1],
                                                                     current_btc_sum)
-                print "If you sold it all at the current price (assuming enough sell orders)"
+                print "Se você vender tudo no preço atual (assumindo que tenha ordens de venda)"
 
                 if total_btc < 0:
                     print utils.bcolors.RED,
@@ -106,14 +109,14 @@ def calculate_fees():
     trade_history = TradeHistory(trading_api.return_trade_history())
     all_fees = trade_history.get_all_fees()
 
-    print "--------------All Fees--------------"
+    print "--------------Todas as Taxas--------------"
     for stock, fees in all_fees.iteritems():
         print "{}={}".format(stock, fees)
 
 
 def get_change_over_time():
     """
-    Returns a list of currencies whose volume is over the threshold.
+    Retorna uma lista de moedas com volume acima do limite mínimo.
     :return:
     """
     threshold = 1000
@@ -131,7 +134,7 @@ def get_change_over_time():
     sorted_currencies = sorted(currencies.items(), key=operator.itemgetter(1), reverse=True)
 
     period = 300
-    print "Change over time for BTC traded currencies with volume > 1000 BTC"
+    print "Mudança no decorrer do tempo para moedas cnegociadas por BTC com volume > 1000 BTC"
     for currency in sorted_currencies:
         now = int(time.time())
         last_week = now - 604800
@@ -140,8 +143,8 @@ def get_change_over_time():
             currency_pair=currency[0],
             start=last_week,
         )
-        print "Currency: {}, Volume: {}".format(currency[0], currency[1])
-        print "  1H: {}, 24H: {}, 2D: {}, 3D: {}, 4D: {}, 1W: {}".format(
+        print "Moeda: {}, Volume: {}".format(currency[0], currency[1])
+        print "  1H: {}, 24H: {}, 2D: {}, 3D: {}, 4D: {}, 1S: {}".format(
             _to_percent_change(history[-1]['close']/history[-(3600/period-1)]['close']),
             _to_percent_change(history[-1]['close']/history[-(86400/period-1)]['close']),
             _to_percent_change(history[-1]['close']/history[-(172800/period-1)]['close']),

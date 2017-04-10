@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+import os, sys
 import argparse
 import textwrap
 from collections import OrderedDict
@@ -11,32 +14,32 @@ def main():
     actions = OrderedDict([
         ("GetOverview", {
             'function': analyzer.get_overview,
-            'help': 'Returns overall balance and percentage earned/lost',
+            'help': 'Retorna o balanço geral e porcentagem ganhada/perdida',
         }),
         ("GetDetailedOverview", {
             'function': analyzer.get_detailed_overview,
-            'help': 'Returns detailed overall balance and percentage earned/lost',
+            'help': 'Retorna um balanço geral detalhado e porcentagem ganhada/perdida',
         }),
         ("CalculateFees", {
             'function': analyzer.calculate_fees,
-            'help': 'Returns the total amount in fees',
+            'help': 'Retorna o valor total em taxas',
         }),
         ("GetChangeOverTime", {
             'function': analyzer.get_change_over_time,
-            'help': 'Public function: Returns percent change over a series of time periods for currencies exceeding a volume threshold'
+            'help': 'Função pública: Retorna a mudança da porcentagem em uma série de períodos de tempo para moedas que excedam um volume mínimo'
         })
     ])
 
     parser = argparse.ArgumentParser(
-        description="This analyzes information from your Poloniex account",
+        description="Isso analisa informação da sua conta na Poloniex",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('-a', '--action', help='Script action (see below).',
+    parser.add_argument('-a', '--action', help='Ação do script (veja abaixo).',
                         default='', required=True)
-    parser.add_argument('-l', '--loop', help='Run every n seconds',
+    parser.add_argument('-l', '--loop', help='Roda a cada n segundos',
                         default='', required=False)
 
-    parser.epilog = "script actions/tasks:"
+    parser.epilog = "ações/tarefas do script:"
     for action in actions:
         parser.epilog += "\n    {}".format(action)
         line_length = 80

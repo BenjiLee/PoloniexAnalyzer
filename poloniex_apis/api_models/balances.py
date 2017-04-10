@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+import os, sys
 class Balances:
     def __init__(self, all_balances):
         self.all_balances = all_balances
@@ -14,6 +17,6 @@ class Balances:
         total_btc = 0
         for stock, balances in self.get_active_balances().iteritems():
             total_btc += float(balances['btcValue'])
-        print "----------Current Balances----------"
+        print "----------Balanços Atuais----------"
         print "Total BTC={}".format(total_btc)
         return total_btc

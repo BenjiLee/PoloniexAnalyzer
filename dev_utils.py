@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: latin-1 -*-
+import os, sys
 """
-Utility methods for development
+Métodos utilitários para desenvolvimento
 """
 import json
 
