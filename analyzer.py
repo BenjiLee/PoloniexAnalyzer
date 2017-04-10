@@ -35,25 +35,25 @@ def get_overview():
     print "---Earnings/Losses Against Balance--"
     print "{} BTC/${}".format(btc_balance_sum, usd_balance_sum)
     if balance_percentage < 100:
-        print "Stop trading!"
+        print "Stop trading! You're an idiot!"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 110:
-        print "Still worse than an index."
+        print "You bring dishonor to your family."
         print "{}%".format(balance_percentage)
     elif balance_percentage < 150:
-        print "Not bad"
+        print "Potatoes do better trading than you."
         print "{}%".format(balance_percentage)
     elif balance_percentage < 175:
-        print "You belong here"
+        print "Describes your trading-style in a single sentence: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 200:
-        print "Like striking crypto-oil"
+        print "Like streaking at a wedding"
         print "{}%".format(balance_percentage)
     elif balance_percentage < 250:
-        print "On your way to becoming a bitcoin millionaire"
+        print "On your way to becoming a bitcoin sensei rockstar ninja guru."
         print "{}%".format(balance_percentage)
     else:
-        print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
+        print "Cryptocurrencies can get heavy, you should buy drugs on the internet with them. Down with the government!"
         print "{}%".format(balance_percentage)
 
 
