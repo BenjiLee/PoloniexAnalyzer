@@ -8,6 +8,7 @@ the first place) I would update this documentation.
 import operator
 
 import time
+from collections import defaultdict
 
 import poloniex_apis.trading_api as trading_api
 import utils
@@ -105,10 +106,23 @@ def calculate_fees():
     # TODO Should this take in the data models or call it itself
     trade_history = TradeHistory(trading_api.return_trade_history())
     all_fees = trade_history.get_all_fees()
+    all_prices = public_api.return_ticker()
 
+    fee_dict = defaultdict(float)
     print "--------------All Fees--------------"
-    for stock, fees in all_fees.iteritems():
-        print "{}={}".format(stock, fees)
+    for currency_pair, fees in all_fees.iteritems():
+        print "{}={}".format(currency_pair, fees)
+        base_currency = currency_pair.split("_")[0]
+        fee_dict[base_currency] += fees
+
+    total_fees = 0
+    print "-------------Total Fees-------------"
+    for currency, fees in fee_dict.iteritems():
+        if currency != "BTC":
+            total_fees += float(all_prices["BTC_" + currency]['last']) * fees
+        else:
+            total_fees += fees
+    print "Total fees in BTC={}".format(total_fees)
 
 
 def get_change_over_time():
