@@ -119,7 +119,10 @@ def calculate_fees():
     print "-------------Total Fees-------------"
     for currency, fees in fee_dict.iteritems():
         if currency != "BTC":
-            total_fees += float(all_prices["BTC_" + currency]['last']) * fees
+            if currency == "USDT":
+                total_fees += float(all_prices["USDT_BTC"]['last']) * fees
+            else:
+                total_fees += float(all_prices["BTC_" + currency]['last']) * fees
         else:
             total_fees += fees
     print "Total fees in BTC={}".format(total_fees)
