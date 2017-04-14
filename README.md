@@ -65,6 +65,8 @@ ETH_ETC=0.01
 BTC_XMR=0.0105
 BTC_DASH=0.0295
 BTC_ETH=0.143
+-------------Total Fees-------------
+Total fees in BTC=0.5635
 
 >>> python poloniex.py -a GetDetailedOverview
 
