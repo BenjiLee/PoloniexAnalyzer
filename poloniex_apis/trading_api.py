@@ -11,6 +11,8 @@ import json
 import time
 import urllib2
 
+import sys
+
 from api_key_secret_util import get_api_key, get_api_secret
 
 api_url = "https://poloniex.com/tradingApi"
@@ -81,14 +83,18 @@ def _call_trading_api(post_body):
     request.add_header("Key", get_api_key())
     request.add_header("Sign", _sign_header(post_body))
     request.add_data(post_body)
-    response = urllib2.urlopen(request).read()
-    response_dict = json.loads(response)
+    response = urllib2.urlopen(request)
+    if response.code == 200:
+        print "HTTP Error 422. Poloniex server might be overloaded. " \
+              "Try again later. If the error persists, you might need a new API key/secret"
+        sys.exit(0)
+    response_dict = json.loads(response.read())
     if "error" in response_dict:
         if response_dict["error"] == "Invalid API key/secret pair.":
             raise InvalidKeySecretError
         else:
             raise TradingApiError(response_dict["error"])
-    return json.loads(response)
+    return response_dict
 
 
 def _build_body(command, parameters=None):
