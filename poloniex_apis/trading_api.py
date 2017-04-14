@@ -84,7 +84,7 @@ def _call_trading_api(post_body):
     request.add_header("Sign", _sign_header(post_body))
     request.add_data(post_body)
     response = urllib2.urlopen(request)
-    if response.code == 200:
+    if response.code == 422:
         print "HTTP Error 422. Poloniex server might be overloaded. " \
               "Try again later. If the error persists, you might need a new API key/secret"
         sys.exit(0)
