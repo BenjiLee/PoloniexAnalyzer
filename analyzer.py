@@ -148,6 +148,9 @@ def get_change_over_time():
     sorted_currencies = sorted(currencies.items(), key=operator.itemgetter(1), reverse=True)
 
     period = 300
+
+    time_segments = [3600, 86400, 172800, 259200, 345600, 604800]
+
     print "Change over time for BTC traded currencies with volume > 1000 BTC"
     for currency in sorted_currencies:
         now = int(time.time())
@@ -157,16 +160,16 @@ def get_change_over_time():
             currency_pair=currency[0],
             start=last_week,
         )
+        time_segment_changes = []
+        for segment in time_segments:
+            try:
+                time_segment_changes.append(_to_percent_change(history[-1]['close']/history[-(segment/period-1)]['close']))
+            except KeyError:
+                time_segment_changes.append("No data")
+
         print "Currency: {}, Volume: {}".format(currency[0], currency[1])
-        print "  1H: {}, 24H: {}, 2D: {}, 3D: {}, 4D: {}, 1W: {}".format(
-            _to_percent_change(history[-1]['close']/history[-(3600/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(86400/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(172800/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(259200/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(345600/period-1)]['close']),
-            _to_percent_change(history[-1]['close']/history[-(604800/period-1)]['close']),
-        )
-        time.sleep(1)
+        print "  1H: {}, 24H: {}, 2D: {}, 3D: {}, 4D: {}, 1W: {}".format(*time_segment_changes)
+        time.sleep(2)
 
 
 def _to_percent_change(number):
