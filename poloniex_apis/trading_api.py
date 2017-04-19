@@ -83,11 +83,18 @@ def _call_trading_api(post_body):
     request.add_header("Key", get_api_key())
     request.add_header("Sign", _sign_header(post_body))
     request.add_data(post_body)
-    response = urllib2.urlopen(request)
-    if response.code == 422:
-        print "HTTP Error 422. Poloniex server might be overloaded. " \
-              "Try again later. If the error persists, you might need a new API key/secret"
-        sys.exit(0)
+    try:
+        response = urllib2.urlopen(request)
+    except urllib2.HTTPError as err:
+        if err.code == 422:
+            print "HTTP Error 422. Use a new API key/secret. From the Poloniex API doc:\n" \
+                  "    Additionally, all queries must include a 'nonce' POST parameter.\n" \
+                  "    The nonce parameter is an integer which must always be greater \n" \
+                  "    than the previous nonce used.\n\n" \
+                  "If you have used another script or the api directly, the nonce value\n" \
+                  "is persistent may be greater than what this script is setting. This" \
+                  "script uses the Epoch time to determine the nonce."
+            sys.exit(0)
     response_dict = json.loads(response.read())
     if "error" in response_dict:
         if response_dict["error"] == "Invalid API key/secret pair.":
@@ -101,7 +108,7 @@ def _build_body(command, parameters=None):
     """
     Builds the body for the trading api. Api methods are specified by the
     'command' POST parameter. Additionally, each query must have the 'nonce'
-    POST parameter which requires a greater int on each call.
+    POST parameter which requires a greater int than the previous  call.
 
     :type parameters: (dict) Extra parameters
     :param command: (str) API method
