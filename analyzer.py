@@ -83,7 +83,7 @@ def get_detailed_overview():
                     ticker_sum -= float(trade["amount"]) * float(trade["fee"])  # Fee
                 else:
                     ticker_sum -= float(trade["amount"])
-            if ticker_sum > 0.000000001:
+            if ticker_sum > -1:  # Set to 0.000001 to hide 0 balances
                 current_btc_sum = float(ticker_price.get_price_for_ticker(ticker)) * ticker_sum
                 total_btc = current_btc_sum - btc_sum
                 total_usd = float("{:.4}".format(total_btc * ticker_price.get_price_for_ticker("USDT_BTC")))
