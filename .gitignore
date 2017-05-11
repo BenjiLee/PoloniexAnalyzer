@@ -1,3 +1,6 @@
+# Pycharm
+.idea/
+
 # Repo specific ignores
 api_keys.ini
 
