@@ -5,7 +5,8 @@ Poloniex's Public API. Not all public api methods are implemented and will
 probably not be added unless it will actually be used.
 """
 import json
-import urllib2
+from urllib.request import Request
+from urllib.request import urlopen
 
 api_url = "https://poloniex.com/public"
 
@@ -40,7 +41,7 @@ def return_chart_data(period, currency_pair, start, end=9999999999):
 
 
 def _call_public_api(url):
-    request = urllib2.Request(url)
-    response = urllib2.urlopen(request)
-    json_response = response.read()
+    request = Request(url)
+    response = urlopen(request)
+    json_response = response.read().decode('utf8')
     return json.loads(json_response)

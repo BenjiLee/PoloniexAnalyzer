@@ -49,7 +49,7 @@ def main():
 
     if args.action not in actions or args.action is None:
         parser.print_help()
-        print args.action
+        print(args.action)
         return
 
     if not args.loop:
