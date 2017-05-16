@@ -1,5 +1,7 @@
 # PoloniexAnalyzer
 
+#### Note: This project will be moving on to python3. If you want to use the python2 snapshop checkout the `v1.0.0` tag 
+
 ## What does this do?
 Queries to Poloniex API for Deposit/Withdrawal history and current balances, and then returns you percentage earned/lost.
 

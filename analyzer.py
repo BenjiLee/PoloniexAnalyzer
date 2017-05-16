@@ -33,37 +33,38 @@ def get_overview():
     btc_balance_sum = current - balance
     usd_balance_sum = "{:.2f}".format(btc_balance_sum * usd_btc_price)
 
-    print "---Earnings/Losses Against Balance--"
-    print "{} BTC/${}".format(btc_balance_sum, usd_balance_sum)
+    print("---Earnings/Losses Against Balance--")
+    print("{} BTC/${}".format(btc_balance_sum, usd_balance_sum))
     if balance_percentage < 100:
-        print "Stop trading!"
-        print "{}%".format(balance_percentage)
+        print("Stop trading!")
+        print("{}%".format(balance_percentage))
     elif balance_percentage < 110:
-        print "Still worse than an index."
-        print "{}%".format(balance_percentage)
+        print("Still worse than an index.")
+        print("{}%".format(balance_percentage))
     elif balance_percentage < 150:
-        print "Not bad"
-        print "{}%".format(balance_percentage)
+        print("Not bad")
+        print("{}%".format(balance_percentage))
     elif balance_percentage < 175:
-        print "You belong here"
-        print "{}%".format(balance_percentage)
+        print("You belong here")
+        print("{}%".format(balance_percentage))
     elif balance_percentage < 200:
-        print "Like striking crypto-oil"
-        print "{}%".format(balance_percentage)
+        print("Like striking crypto-oil")
+        print("{}%".format(balance_percentage))
     elif balance_percentage < 250:
-        print "On your way to becoming a bitcoin millionaire"
-        print "{}%".format(balance_percentage)
+        print("On your way to becoming a bitcoin millionaire")
+        print("{}%".format(balance_percentage))
     else:
-        print "Cryptocurrencies can get heavy, you should send them over to me for safe keeping!"
-        print "{}%".format(balance_percentage)
+        print("Cryptocurrencies can get heavy, you should send them over to me for safe keeping!")
+        print("{}%".format(balance_percentage))
 
 
 def get_detailed_overview():
+    global current
     ticker_price = TickerPrice(public_api.return_ticker())
     trade_history = trading_api.return_trade_history()
-    print "Warning, if you made non BTC trades, for example, ETH to ETC, some"
-    print "of the values may look unusual. Since non BTC trades have not been"
-    print "calculated in."
+    print("Warning, if you made non BTC trades, for example, ETH to ETC, some")
+    print("of the values may look unusual. Since non BTC trades have not been")
+    print("calculated in.")
     for ticker in trade_history:
         if ticker.startswith("BTC_"):
             current = list(reversed(trade_history[ticker]))
@@ -87,17 +88,17 @@ def get_detailed_overview():
                 current_btc_sum = float(ticker_price.get_price_for_ticker(ticker)) * ticker_sum
                 total_btc = current_btc_sum - btc_sum
                 total_usd = float("{:.4}".format(total_btc * ticker_price.get_price_for_ticker("USDT_BTC")))
-                print "--------------{}----------------".format(ticker)
-                print "You invested {} BTC for {} {}/{} BTC".format(btc_sum, ticker_sum, ticker.split("_")[1],
-                                                                    current_btc_sum)
-                print "If you sold it all at the current price (assuming enough sell orders)"
+                print("--------------{}----------------".format(ticker))
+                print("You invested {} BTC for {} {}/{} BTC".format(btc_sum, ticker_sum, ticker.split("_")[1],
+                                                                    current_btc_sum))
+                print("If you sold it all at the current price (assuming enough sell orders)")
 
                 if total_btc < 0:
-                    print utils.bcolors.RED,
+                    print(utils.bcolors.RED, end=' ')
                 else:
-                    print utils.bcolors.GREEN,
-                print "{} BTC/{} USD".format(total_btc, total_usd)
-                print utils.bcolors.END_COLOR,
+                    print(utils.bcolors.GREEN, end=' ')
+                print("{} BTC/{} USD".format(total_btc, total_usd))
+                print(utils.bcolors.END_COLOR, end=' ')
 
     return current
 
@@ -109,15 +110,15 @@ def calculate_fees():
     all_prices = public_api.return_ticker()
 
     fee_dict = defaultdict(float)
-    print "--------------All Fees--------------"
-    for currency_pair, fees in all_fees.iteritems():
-        print "{}={}".format(currency_pair, fees)
+    print("--------------All Fees--------------")
+    for currency_pair, fees in all_fees.items():
+        print("{}={}".format(currency_pair, fees))
         base_currency = currency_pair.split("_")[0]
         fee_dict[base_currency] += fees
 
     total_fees = 0
-    print "-------------Total Fees-------------"
-    for currency, fees in fee_dict.iteritems():
+    print("-------------Total Fees-------------")
+    for currency, fees in fee_dict.items():
         if currency != "BTC":
             if currency == "USDT":
                 total_fees += float(all_prices["USDT_BTC"]['last']) * fees
@@ -125,7 +126,7 @@ def calculate_fees():
                 total_fees += float(all_prices["BTC_" + currency]['last']) * fees
         else:
             total_fees += fees
-    print "Total fees in BTC={}".format(total_fees)
+    print("Total fees in BTC={}".format(total_fees))
 
 
 def get_change_over_time():
@@ -151,7 +152,7 @@ def get_change_over_time():
 
     time_segments = [3600, 86400, 172800, 259200, 345600, 604800]
 
-    print "Change over time for BTC traded currencies with volume > 1000 BTC"
+    print("Change over time for BTC traded currencies with volume > 1000 BTC")
     for currency in sorted_currencies:
         now = int(time.time())
         last_week = now - 604800
@@ -163,12 +164,14 @@ def get_change_over_time():
         time_segment_changes = []
         for segment in time_segments:
             try:
-                time_segment_changes.append(_to_percent_change(history[-1]['close']/history[-(segment/period-1)]['close']))
+                time_segment_changes.append(
+                    _to_percent_change(history[-1]['close']/
+                                       history[-int((segment/period-1))]['close']))
             except KeyError:
                 time_segment_changes.append("No data")
 
-        print "Currency: {}, Volume: {}".format(currency[0], currency[1])
-        print "  1H: {}, 24H: {}, 2D: {}, 3D: {}, 4D: {}, 1W: {}".format(*time_segment_changes)
+        print("Currency: {}, Volume: {}".format(currency[0], currency[1]))
+        print("  1H: {}, 24H: {}, 2D: {}, 3D: {}, 4D: {}, 1W: {}".format(*time_segment_changes))
         time.sleep(2)
 
 

@@ -9,11 +9,12 @@ import hashlib
 import hmac
 import json
 import time
-import urllib2
-
+from urllib.error import HTTPError
+from urllib.request import urlopen
+from urllib.request import Request
 import sys
 
-from api_key_secret_util import get_api_key, get_api_secret
+from .api_key_secret_util import get_api_key, get_api_secret
 
 api_url = "https://poloniex.com/tradingApi"
 
@@ -63,7 +64,7 @@ def return_trade_history():
 
 
 def _sign_header(post_body):
-    hashed = hmac.new(get_api_secret(), post_body, hashlib.sha512)
+    hashed = hmac.new(get_api_secret(), bytes(post_body,  encoding='utf-8'), hashlib.sha512)
     return hashed.hexdigest()
 
 
@@ -79,23 +80,23 @@ def _call_trading_api(post_body):
     :raises: InvalidKeySecretError
     :raises: TradingApiError
     """
-    request = urllib2.Request(api_url)
+    request = Request(api_url)
     request.add_header("Key", get_api_key())
     request.add_header("Sign", _sign_header(post_body))
-    request.add_data(post_body)
+    request.data = bytes(post_body, encoding='utf-8')
     try:
-        response = urllib2.urlopen(request)
-    except urllib2.HTTPError as err:
+        response = urlopen(request)
+    except HTTPError as err:
         if err.code == 422:
-            print "HTTP Error 422. Use a new API key/secret. From the Poloniex API doc:\n" \
-                  "    Additionally, all queries must include a 'nonce' POST parameter.\n" \
-                  "    The nonce parameter is an integer which must always be greater \n" \
-                  "    than the previous nonce used.\n\n" \
-                  "If you have used another script or the api directly, the nonce value\n" \
-                  "is persistent may be greater than what this script is setting. This" \
-                  "script uses the Epoch time to determine the nonce."
+            print("HTTP Error 422. Use a new API key/secret. From the Poloniex API doc:\n"
+                  "    Additionally, all queries must include a 'nonce' POST parameter.\n"
+                  "    The nonce parameter is an integer which must always be greater \n"
+                  "    than the previous nonce used.\n\n"
+                  "If you have used another script or the api directly, the nonce value\n"
+                  "is persistent may be greater than what this script is setting. This"
+                  "script uses the Epoch time to determine the nonce.")
             sys.exit(0)
-    response_dict = json.loads(response.read())
+    response_dict = json.loads(response.read().decode('utf8'))
     if "error" in response_dict:
         if response_dict["error"] == "Invalid API key/secret pair.":
             raise InvalidKeySecretError
@@ -119,6 +120,6 @@ def _build_body(command, parameters=None):
     nonce_int = int(time.time() * 100)
     body += "&nonce={}".format(nonce_int)
     if parameters is not None:
-        for key, value in parameters.iteritems():
+        for key, value in parameters.items():
             body += "&{}={}".format(key, value)
     return body

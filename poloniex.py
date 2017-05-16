@@ -3,6 +3,11 @@ import textwrap
 from collections import OrderedDict
 
 import time
+import sys
+
+if sys.version_info[0] < 3:
+    raise Exception("This project has move to using python 3. If you would like to use the python 2 snapshot, checkout"
+                    " the v1.0.0 tag. `git checkout v1.0.0`")
 
 import analyzer
 
@@ -49,7 +54,7 @@ def main():
 
     if args.action not in actions or args.action is None:
         parser.print_help()
-        print args.action
+        print(args.action)
         return
 
     if not args.loop:
