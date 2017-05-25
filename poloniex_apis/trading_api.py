@@ -63,6 +63,18 @@ def return_trade_history():
     return _call_trading_api(body)
 
 
+def return_lending_history():
+    parameters = {
+        'start': '0',
+        'end': time.time()
+    }
+    body = _build_body(
+        command="returnLendingHistory",
+        parameters=parameters
+    )
+    return _call_trading_api(body)
+
+
 def _sign_header(post_body):
     hashed = hmac.new(get_api_secret(), bytes(post_body,  encoding='utf-8'), hashlib.sha512)
     return hashed.hexdigest()

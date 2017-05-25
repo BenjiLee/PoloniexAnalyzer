@@ -36,10 +36,11 @@ script actions/tasks:
         Returns detailed overall balance and percentage earned/lost
     CalculateFees
         Returns the total amount in fees
+    GetLendingHistory
+        Returns your total lending interest and fees.
     GetChangeOverTime
         Public function: Returns percent change over a series of time periods
         for currencies exceeding a volume threshold
-
 ```
 
 ## Example output 
@@ -102,6 +103,13 @@ Currency: BTC_ETC, Volume: 1195.23748895
   1H: -0.11%, 24H: 6.82%, 2D: 4.01%, 3D: 8.66%, 4D: 9.88%, 1W: 12.92%
 Currency: BTC_XRP, Volume: 1004.84598195
   1H: -0.40%, 24H: 1.63%, 2D: 7.30%, 3D: 9.41%, 4D: 8.46%, 1W: 2.25%
+  
+>>> python poloniex.py -a GetLendingHistory
+
+-------------Your Lending History-------------
+Total earned: 0.0019570100000000003 BTC
+Total fees: -0.00034525999999999996 BTC
+Average rate: 0.1284%
 
 ```
 
