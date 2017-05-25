@@ -21,15 +21,33 @@ class DWHistory:
         return self.deposits, self.withdrawals
 
     def get_btc_balance(self, ticker_data):
+        # TODO: Maybe the api calls should be in here and ticker_data could be a class object
         balance = 0
-        for deposit, amount in self.deposits.items():
-            if deposit != u'BTC':
-                balance += amount * float(ticker_data[u'BTC_' + deposit]['last'])
+        for deposit_ticker, amount in self.deposits.items():
+            if deposit_ticker != u'BTC':
+                balance += amount * self._get_ticker_value(ticker_data, deposit_ticker)
             else:
                 balance += amount
-        for withdrawal, amount in self.withdrawals.items():
-            if withdrawal != u'BTC':
-                balance -= amount * float(ticker_data[u'BTC_' + withdrawal]['last'])
+        for withdrawal_ticker, amount in self.withdrawals.items():
+            if withdrawal_ticker != u'BTC':
+                balance -= amount * self._get_ticker_value(ticker_data, withdrawal_ticker)
             else:
                 balance -= amount
         return balance
+
+    def _get_ticker_value(self, ticker_data, ticker):
+        """
+        Gets the ticker value against BTC. If it's delisted, 0 will be returned.
+
+        Args:
+            ticker_data (dict): Dict of all the ticker data
+            ticker (str): The ticker we are getting the BTC value for 
+
+        Returns:
+            float
+        """
+        try:
+            return float(ticker_data[u'BTC_' + ticker]['last'])
+        except KeyError:
+            # For delisted coins
+            return 0
