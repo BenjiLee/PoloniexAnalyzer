@@ -62,7 +62,7 @@ def get_detailed_overview():
     global current
     ticker_price = TickerPrice(public_api.return_ticker())
     trade_history = trading_api.return_trade_history()
-    print("Warning, if you made non BTC trades, for example, ETH to ETC, some")
+    print("Warning! If you made non BTC trades, for example, ETH to ETC, some")
     print("of the values may look unusual. Since non BTC trades have not been")
     print("calculated in.")
     for ticker in trade_history:
@@ -89,8 +89,8 @@ def get_detailed_overview():
                 total_btc = current_btc_sum - btc_sum
                 total_usd = float("{:.4}".format(total_btc * ticker_price.get_price_for_ticker("USDT_BTC")))
                 print("--------------{}----------------".format(ticker))
-                print("You invested {} BTC for {} {}/{} BTC".format(btc_sum, ticker_sum, ticker.split("_")[1],
-                                                                    current_btc_sum))
+                print("Over your account's lifetime, you have invested {} BTC".format(btc_sum))
+                print("to achieve your current balance of {} {}/{} BTC".format(ticker_sum, ticker.split("_")[1], current_btc_sum))
                 print("If you sold it all at the current price (assuming enough sell orders)")
 
                 if total_btc < 0:
