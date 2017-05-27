@@ -10,6 +10,7 @@ import operator
 import time
 from collections import defaultdict
 
+import dev_utils
 import poloniex_apis.trading_api as trading_api
 import utils
 from poloniex_apis import public_api
@@ -177,17 +178,20 @@ def get_change_over_time():
 
 def get_lending_history():
     lending_history = trading_api.return_lending_history()
+
     amount = 0
     duration = 0
     earnings = 0
     fees = 0
+    weighted_rate = 0
     for loan in lending_history:
         earnings += float(loan['earned'])
         fees += float(loan['fee'])
         amount += float(loan['amount'])
         duration += float(loan['duration'])
+        weighted_rate += float(loan['rate'])*float(loan['duration'])
 
-    average_rate = float("{:.4}".format(earnings/duration * 100 * amount))
+    average_rate = float("{:.4}".format(weighted_rate/duration * 100))
     print("-------------Your Lending History-------------")
     print("Total earned: {} BTC".format(earnings))
     print("Total fees: {} BTC".format(fees))
