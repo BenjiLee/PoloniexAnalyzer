@@ -177,21 +177,28 @@ def get_change_over_time():
 
 def get_lending_history():
     lending_history = trading_api.return_lending_history()
-    amount = 0
-    duration = 0
-    earnings = 0
-    fees = 0
+    data = {}
     for loan in lending_history:
-        earnings += float(loan['earned'])
-        fees += float(loan['fee'])
-        amount += float(loan['amount'])
-        duration += float(loan['duration'])
+        if not loan['currency'] in data:
+            data[loan['currency']] = defaultdict()
+            data[loan['currency']]['earnings'] = 0
+            data[loan['currency']]['fees'] = 0
+            data[loan['currency']]['amount'] = 0
+            data[loan['currency']]['duration'] = 0
+            data[loan['currency']]['weighted_rate'] = 0
 
-    average_rate = float("{:.4}".format(earnings/duration * 100 * amount))
-    print("-------------Your Lending History-------------")
-    print("Total earned: {} BTC".format(earnings))
-    print("Total fees: {} BTC".format(fees))
-    print("Average rate: {}%".format(average_rate))
+        data[loan['currency']]['earnings'] += float(loan['earned'])
+        data[loan['currency']]['fees'] += float(loan['fee'])
+        data[loan['currency']]['amount'] += float(loan['amount'])
+        data[loan['currency']]['duration'] += float(loan['duration'])
+        data[loan['currency']]['weighted_rate'] += float(loan['rate'])*float(loan['duration'])
+
+    for currency in data:
+        average_rate = float("{:.4}".format(data[currency]['weighted_rate']/data[currency]['duration'] * 100))
+        print("---------Your {} Lending History---------".format(currency))
+        print("Total earned: {} {}".format(data[currency]['earnings'], currency))
+        print("Total fees: {} {}".format(data[currency]['fees'], currency))
+        print("Average rate: {}%".format(average_rate))
 
 
 def _to_percent_change(number):
