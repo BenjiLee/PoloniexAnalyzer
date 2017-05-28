@@ -16,7 +16,7 @@ from poloniex_apis import public_api
 from poloniex_apis import trading_api
 from poloniex_apis.api_models.balances import Balances
 from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
-from poloniex_apis.api_models.ticker_price import TickerPrice
+from poloniex_apis.api_models.ticker_price import TickerData
 from poloniex_apis.api_models.trade_history import TradeHistory
 from poloniex_apis.public_api import return_usd_btc
 
@@ -26,7 +26,7 @@ def get_overview():
     dw_history = DWHistory(trading_api.return_deposits_withdrawals())
     deposits, withdrawals = dw_history.get_dw_history()
     utils.print_dw_history(deposits, withdrawals)
-    balance = dw_history.get_btc_balance(public_api.return_ticker())
+    balance = dw_history.get_btc_balance()
     current = balances.get_btc_total()
     usd_btc_price = return_usd_btc()
     balance_percentage = float("{:.4}".format(current / balance * 100))
@@ -42,7 +42,7 @@ def get_overview():
 
 def get_detailed_overview():
     global current
-    ticker_price = TickerPrice(public_api.return_ticker())
+    ticker_price = TickerData()
     trade_history = trading_api.return_trade_history()
     print("Warning! If you made non BTC trades, for example, ETH to ETC, some")
     print("of the values may look unusual. Since non BTC trades have not been")

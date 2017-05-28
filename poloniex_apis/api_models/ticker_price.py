@@ -1,6 +1,9 @@
-class TickerPrice:
-    def __init__(self, ticker_price):
-        self.ticker_price = ticker_price
+from poloniex_apis import public_api
+
+
+class TickerData:
+    def __init__(self):
+        self.ticker_price = public_api.return_ticker()
 
     def get_price_for_ticker(self, ticker):
         try:
