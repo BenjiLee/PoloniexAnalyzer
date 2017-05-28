@@ -11,6 +11,7 @@ import time
 from collections import defaultdict
 
 import poloniex_apis.trading_api as trading_api
+import printer
 import utils
 from poloniex_apis import public_api
 from poloniex_apis.api_models.balances import Balances
@@ -27,35 +28,16 @@ def get_overview():
     utils.print_dw_history(deposits, withdrawals)
     balance = dw_history.get_btc_balance(public_api.return_ticker())
     current = balances.get_btc_total()
-
     usd_btc_price = return_usd_btc()
     balance_percentage = float("{:.4}".format(current / balance * 100))
     btc_balance_sum = current - balance
     usd_balance_sum = "{:.2f}".format(btc_balance_sum * usd_btc_price)
 
-    print("---Earnings/Losses Against Balance--")
-    print("{} BTC/${}".format(btc_balance_sum, usd_balance_sum))
-    if balance_percentage < 100:
-        print("Stop trading!")
-        print("{}%".format(balance_percentage))
-    elif balance_percentage < 110:
-        print("Still worse than an index.")
-        print("{}%".format(balance_percentage))
-    elif balance_percentage < 150:
-        print("Not bad")
-        print("{}%".format(balance_percentage))
-    elif balance_percentage < 175:
-        print("You belong here")
-        print("{}%".format(balance_percentage))
-    elif balance_percentage < 200:
-        print("Like striking crypto-oil")
-        print("{}%".format(balance_percentage))
-    elif balance_percentage < 250:
-        print("On your way to becoming a bitcoin millionaire")
-        print("{}%".format(balance_percentage))
-    else:
-        print("Cryptocurrencies can get heavy, you should send them over to me for safe keeping!")
-        print("{}%".format(balance_percentage))
+    printer.print_get_overview_results(
+        btc_balance_sum=btc_balance_sum,
+        usd_balance_sum=usd_balance_sum,
+        balance_percentage=balance_percentage
+    )
 
 
 def get_detailed_overview():
@@ -195,10 +177,12 @@ def get_lending_history():
 
     for currency in data:
         average_rate = float("{:.4}".format(data[currency]['weighted_rate']/data[currency]['duration'] * 100))
-        print("---------Your {} Lending History---------".format(currency))
-        print("Total earned: {} {}".format(data[currency]['earnings'], currency))
-        print("Total fees: {} {}".format(data[currency]['fees'], currency))
-        print("Average rate: {}%".format(average_rate))
+        printer.print_get_lending_history(
+            currency=currency,
+            earnings=data[currency]['earnings'],
+            fees=data[currency]['fees'],
+            average_rate=average_rate
+        )
 
 
 def _to_percent_change(number):
