@@ -32,7 +32,11 @@ def main():
         }),
         ("GetChangeOverTime", {
             'function': analyzer.get_change_over_time,
-            'help': 'Public function: Returns percent change over a series of time periods for currencies exceeding a volume threshold'
+            'help': 'Returns percent change over a series of time periods for currencies exceeding a volume threshold'
+        }),
+        ("GraphAccountBalance", {
+            'function': analyzer.get_account_balance,
+            'help': 'Requries matplotlib: Public function: Returns percent change over a series of time periods for currencies exceeding a volume threshold'
         })
     ])
 

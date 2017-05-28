@@ -184,6 +184,56 @@ def get_lending_history():
         )
 
 
+def get_account_balance():
+    # dev_utils.dict_to_file(trading_api.return_trade_history(), 'trade_history.txt')
+    trade_history = dev_utils.file_to_dict('trade_history.txt')
+    dw_history = dev_utils.file_to_dict('dw_history.txt')
+    master_dict = defaultdict(int)
+    sorted_dw = _get_sorted_dw_history(dw_history)
+
+    for date, value in sorted_dw:
+        master_dict[date] += value
+    non_btc_dict = {}
+    for currency, trades in trade_history.iteritems():
+        for trade in trades:
+            epoch = _get_epoch(trade["date"])
+            value = float(trade["total"])
+            if trade["type"] == "sell":
+                value = -float(value)
+
+            if currency.startswith("BTC"):
+                master_dict[epoch] += value
+            else:
+                if currency in non_btc_dict:
+                    non_btc_dict[currency][epoch] += value
+                else:
+                    non_btc_dict[currency] = defaultdict(int)
+                    non_btc_dict[currency][epoch] += value
+
+
+    for currency, data in non_btc_dict.iteritems():
+        for item in data:
+            ticker = "BTC_" + currency.split("_")[0]
+            estimated_price = public_api.return_chart_data(300, ticker, epoch, epoch+300)[0]['weightedAverage']
+            master_dict[epoch] += estimated_price*float(data[item])
+
+    master_list = []
+    for epoch, value in master_dict.iteritems():
+        master_list.append((epoch, value))
+    master_list.sort(key=lambda tup: tup[0])
+
+    dates = []
+    values = []
+    balance = 0
+    for item in master_list:
+        dates.append(mpldate.epoch2num(item[0]))
+        balance += item[1]
+        values.append(balance)
+
+    graph_data_dict = {'x': dates, 'y': values, "colors": None}
+    _plot_graph(graph_data_dict)
+
+
 def _to_percent_change(number):
     if not isinstance(number, float):
         number = float(number)

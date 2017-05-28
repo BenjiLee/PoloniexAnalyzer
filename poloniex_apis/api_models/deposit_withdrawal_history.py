@@ -1,7 +1,5 @@
 from collections import defaultdict
 
-from poloniex_apis.api_models.ticker_price import TickerData
-
 
 class DWHistory:
     def __init__(self, history):
