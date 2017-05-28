@@ -11,7 +11,6 @@ import time
 from collections import defaultdict
 
 import printer
-import utils
 from poloniex_apis import public_api
 from poloniex_apis import trading_api
 from poloniex_apis.api_models.balances import Balances
@@ -22,11 +21,11 @@ from poloniex_apis.public_api import return_usd_btc
 
 
 def get_overview():
-    balances = Balances(trading_api.return_complete_balances())
+    balances = Balances()
     dw_history = DWHistory(trading_api.return_deposits_withdrawals())
     deposits, withdrawals = dw_history.get_dw_history()
-    utils.print_dw_history(deposits, withdrawals)
-    balance = dw_history.get_btc_balance()
+    printer.print_dw_history(deposits, withdrawals)
+    balance = dw_history.get_btc_balance(TickerData())
     current = balances.get_btc_total()
     usd_btc_price = return_usd_btc()
     balance_percentage = float("{:.4}".format(current / balance * 100))
@@ -42,7 +41,7 @@ def get_overview():
 
 def get_detailed_overview():
     global current
-    ticker_price = TickerData()
+    ticker_data = TickerData()
     trade_history = trading_api.return_trade_history()
     print("Warning! If you made non BTC trades, for example, ETH to ETC, some")
     print("of the values may look unusual. Since non BTC trades have not been")
@@ -67,20 +66,20 @@ def get_detailed_overview():
                 else:
                     ticker_sum -= float(trade["amount"])
             if ticker_sum > -1:  # Set to 0.000001 to hide 0 balances
-                current_btc_sum = float(ticker_price.get_price_for_ticker(ticker)) * ticker_sum
+                current_btc_sum = float(ticker_data.get_price(ticker)) * ticker_sum
                 total_btc = current_btc_sum - btc_sum
-                total_usd = float("{:.4}".format(total_btc * ticker_price.get_price_for_ticker("USDT_BTC")))
+                total_usd = float("{:.4}".format(total_btc * ticker_data.get_price("USDT_BTC")))
                 print("--------------{}----------------".format(ticker))
                 print("Over your account's lifetime, you have invested {} BTC".format(btc_sum))
                 print("to achieve your current balance of {} {}/{} BTC".format(ticker_sum, ticker.split("_")[1], current_btc_sum))
                 print("If you sold it all at the current price (assuming enough sell orders)")
 
                 if total_btc < 0:
-                    print(utils.bcolors.RED, end=' ')
+                    print(printer.bcolors.RED, end=' ')
                 else:
-                    print(utils.bcolors.GREEN, end=' ')
+                    print(printer.bcolors.GREEN, end=' ')
                 print("{} BTC/{} USD".format(total_btc, total_usd))
-                print(utils.bcolors.END_COLOR, end=' ')
+                print(printer.bcolors.END_COLOR, end=' ')
 
     return current
 
