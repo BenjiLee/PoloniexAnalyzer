@@ -10,10 +10,10 @@ import operator
 import time
 from collections import defaultdict
 
-import poloniex_apis.trading_api as trading_api
 import printer
 import utils
 from poloniex_apis import public_api
+from poloniex_apis import trading_api
 from poloniex_apis.api_models.balances import Balances
 from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
 from poloniex_apis.api_models.ticker_price import TickerPrice
