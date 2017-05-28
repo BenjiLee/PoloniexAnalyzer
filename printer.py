@@ -2,6 +2,11 @@
 Some of the logic for printing and the print statements.
 """
 
+class bcolors:
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    END_COLOR = '\033[0m'
+
 
 def print_get_overview_results(btc_balance_sum, usd_balance_sum, balance_percentage):
     print("\nNote: Get Overview currently does not take the margin account into account.")
@@ -36,3 +41,12 @@ def print_get_lending_history(currency, earnings, fees, average_rate):
     print("Total earned: {} {}".format(earnings, currency))
     print("Total fees: {} {}".format(fees, currency))
     print("Average rate: {}%".format(average_rate))
+
+
+def print_dw_history(deposits, withdrawals):
+    print("-----Deposit/Withdrawal History-----")
+    print("------------------------------------")
+    print("--Currency=Deposit-Withdrawal=Total-")
+    for currency, deposit in deposits.items():
+        withdrawal = withdrawals[currency] if currency in withdrawals else 0
+        print("{}={}-{}={}".format(currency, deposit, withdrawal, deposit - withdrawal))
