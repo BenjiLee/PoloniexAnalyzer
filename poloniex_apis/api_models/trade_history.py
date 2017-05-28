@@ -8,6 +8,5 @@ class TradeHistory:
             result[stock] = 0
             for trade in self.history[stock]:
                 result[stock] += float(trade["fee"])
-
         return result
 

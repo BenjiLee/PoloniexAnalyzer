@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from poloniex_apis.api_models.ticker_price import TickerData
+
 
 class DWHistory:
     def __init__(self, history):
@@ -20,34 +22,17 @@ class DWHistory:
                 self.withdrawals[withdrawal['currency']] = float(withdrawal['amount'])
         return self.deposits, self.withdrawals
 
-    def get_btc_balance(self, ticker_data):
-        # TODO: Maybe the api calls should be in here and ticker_data could be a class object
+    def get_btc_balance(self):
+        ticker = TickerData()
         balance = 0
         for deposit_ticker, amount in self.deposits.items():
             if deposit_ticker != u'BTC':
-                balance += amount * self._get_ticker_value(ticker_data, deposit_ticker)
+                balance += amount * ticker.get_price_for_ticker(deposit_ticker)
             else:
                 balance += amount
         for withdrawal_ticker, amount in self.withdrawals.items():
             if withdrawal_ticker != u'BTC':
-                balance -= amount * self._get_ticker_value(ticker_data, withdrawal_ticker)
+                balance -= amount * ticker.get_price_for_ticker(withdrawal_ticker)
             else:
                 balance -= amount
         return balance
-
-    def _get_ticker_value(self, ticker_data, ticker):
-        """
-        Gets the ticker value against BTC. If it's delisted, 0 will be returned.
-
-        Args:
-            ticker_data (dict): Dict of all the ticker data
-            ticker (str): The ticker we are getting the BTC value for 
-
-        Returns:
-            float
-        """
-        try:
-            return float(ticker_data[u'BTC_' + ticker]['last'])
-        except KeyError:
-            # For delisted coins
-            return 0
