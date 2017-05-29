@@ -35,7 +35,7 @@ def main():
             'help': 'Returns percent change over a series of time periods for currencies exceeding a volume threshold'
         }),
         ("GraphAccountBalance", {
-            'function': analyzer.get_account_balance,
+            'function': analyzer.graph_account_balance,
             'help': 'Requries matplotlib: Public function: Returns percent change over a series of time periods for currencies exceeding a volume threshold'
         })
     ])
