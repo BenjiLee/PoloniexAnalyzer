@@ -7,7 +7,7 @@ class Balances:
 
     def get_btc_total(self):
         total_btc = 0
-        for stock, balances in self.get_active_balances().items():
+        for stock, balances in self._get_active_balances().items():
             total_btc += float(balances['btcValue'])
         print("----------Current Balances----------")
         print("Total BTC={}".format(total_btc))
