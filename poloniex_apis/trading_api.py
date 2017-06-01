@@ -108,6 +108,9 @@ def _call_trading_api(post_body):
                   "is persistent may be greater than what this script is setting. This"
                   "script uses the Epoch time to determine the nonce.")
             sys.exit(0)
+        if err.code == 403:
+            print("HTTP Error 403. Are your api keys correct?")
+            sys.exit(0)
     response_dict = json.loads(response.read().decode('utf8'))
     if "error" in response_dict:
         if response_dict["error"] == "Invalid API key/secret pair.":
