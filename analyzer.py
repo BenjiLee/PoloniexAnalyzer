@@ -15,6 +15,7 @@ from poloniex_apis import public_api
 from poloniex_apis import trading_api
 from poloniex_apis.api_models.balances import Balances
 from poloniex_apis.api_models.deposit_withdrawal_history import DWHistory
+from poloniex_apis.api_models.lending_history import LendingHistory
 from poloniex_apis.api_models.ticker_price import TickerData
 from poloniex_apis.api_models.trade_history import TradeHistory
 from poloniex_apis.public_api import return_usd_btc
@@ -157,9 +158,9 @@ def get_change_over_time():
 
 
 def get_lending_history():
-    lending_history = trading_api.return_lending_history()
+    lending_history = LendingHistory()
     data = {}
-    for loan in lending_history:
+    for loan in lending_history.history:
         if not loan['currency'] in data:
             data[loan['currency']] = defaultdict()
             data[loan['currency']]['earnings'] = 0

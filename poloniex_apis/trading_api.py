@@ -63,10 +63,19 @@ def return_trade_history():
     return _call_trading_api(body)
 
 
-def return_lending_history():
+def return_lending_history(start, end):
+    """
+    
+    Args:
+        start: start time
+        end: end time
+
+    Returns: json of lending history between designated times
+
+    """
     parameters = {
-        'start': '0',
-        'end': time.time()
+        'start': start,
+        'end': end
     }
     body = _build_body(
         command="returnLendingHistory",
@@ -105,7 +114,7 @@ def _call_trading_api(post_body):
                   "    The nonce parameter is an integer which must always be greater \n"
                   "    than the previous nonce used.\n\n"
                   "If you have used another script or the api directly, the nonce value\n"
-                  "is persistent may be greater than what this script is setting. This"
+                  "is persistent may be greater than what this script is setting. This \n"
                   "script uses the Epoch time to determine the nonce.")
             sys.exit(0)
         if err.code == 403:
