@@ -3,6 +3,10 @@
 
 # Repo specific ignores
 api_keys.ini
+csv/depositHistory.csv
+csv/lendingHistory.csv
+csv/tradeHistory.csv
+csv/withdrawalHistory.csv
 
 #Byte-compiled / optimized / DLL files
 __pycache__/
