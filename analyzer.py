@@ -72,7 +72,8 @@ def get_detailed_overview():
                 total_usd = float("{:.4}".format(total_btc * ticker_data.get_price("USDT_BTC")))
                 print("--------------{}----------------".format(ticker))
                 print("Over your account's lifetime, you have invested {} BTC".format(btc_sum))
-                print("to achieve your current balance of {} {}/{} BTC".format(ticker_sum, ticker.split("_")[1], current_btc_sum))
+                print("to achieve your current balance of {} {}/{} BTC".format(ticker_sum, ticker.split("_")[1],
+                                                                               current_btc_sum))
                 print("If you sold it all at the current price (assuming enough sell orders)")
 
                 if total_btc < 0:
@@ -94,21 +95,23 @@ def calculate_fees():
     fee_dict = defaultdict(float)
     print("--------------All Fees--------------")
     for currency_pair, fees in all_fees.items():
-        print("{}={}".format(currency_pair, fees))
         base_currency = currency_pair.split("_")[0]
+        print("{}={} {}".format(currency_pair, fees, base_currency))
         fee_dict[base_currency] += fees
-
     total_fees = 0
+    print("-----------Total per base-----------")
+    for currency, fees in fee_dict.items():
+        print("{}={}".format(currency, fees))
     print("-------------Total Fees-------------")
     for currency, fees in fee_dict.items():
-        if currency != "BTC":
-            if currency == "USDT":
-                total_fees += float(all_prices["USDT_BTC"]['last']) * fees
-            else:
-                total_fees += float(all_prices["BTC_" + currency]['last']) * fees
-        else:
+        # Every base coin will have USDT pairing.
+        if currency == "USDT":
             total_fees += fees
-    print("Total fees in BTC={}".format(total_fees))
+        else:
+            total_fees += float(all_prices["USDT_" + currency]['last']) * fees
+    print("Total fees in USDT={}".format(total_fees))
+    # Convert USDT to BTC for BTC total
+    print("Total fees in BTC={}".format(total_fees / float(all_prices["USDT_BTC"]['last'])))
 
 
 def get_change_over_time():
@@ -147,8 +150,8 @@ def get_change_over_time():
         for segment in time_segments:
             try:
                 time_segment_changes.append(
-                    _to_percent_change(history[-1]['close']/
-                                       history[-int((segment/period-1))]['close']))
+                    _to_percent_change(history[-1]['close'] /
+                                       history[-int((segment / period - 1))]['close']))
             except KeyError:
                 time_segment_changes.append("No data")
 
@@ -173,10 +176,10 @@ def get_lending_history():
         data[loan['currency']]['fees'] += float(loan['fee'])
         data[loan['currency']]['amount'] += float(loan['amount'])
         data[loan['currency']]['duration'] += float(loan['duration'])
-        data[loan['currency']]['weighted_rate'] += float(loan['rate'])*float(loan['duration'])
+        data[loan['currency']]['weighted_rate'] += float(loan['rate']) * float(loan['duration'])
 
     for currency in data:
-        average_rate = float("{:.4}".format(data[currency]['weighted_rate']/data[currency]['duration'] * 100))
+        average_rate = float("{:.4}".format(data[currency]['weighted_rate'] / data[currency]['duration'] * 100))
         printer.print_get_lending_history(
             currency=currency,
             earnings=data[currency]['earnings'],
@@ -189,6 +192,3 @@ def _to_percent_change(number):
     if not isinstance(number, float):
         number = float(number)
     return "{:.2f}%".format(number * 100 - 100)
-
-
-
