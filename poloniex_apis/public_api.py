@@ -8,6 +8,9 @@ import json
 from urllib.request import Request
 from urllib.request import urlopen
 
+import dev_utils
+import settings
+
 api_url = "https://poloniex.com/public"
 
 
@@ -17,6 +20,8 @@ def return_usd_btc():
 
 
 def return_ticker():
+    if settings.MOCK_API_RESPONSE:
+        return dev_utils.file_to_dict("return_ticker.txt")
     url = "{}?command=returnTicker".format(api_url)
     return _call_public_api(url)
 
