@@ -6,7 +6,7 @@ def get_api_key():
     Returns a Poloniex API key from the config file
     """
     config = configparser.ConfigParser()
-    config.read("api_keys.ini")
+    config.read_file(open("api_keys.ini"))
     key = config.get("ApiKeys", "key")
     return key
 
