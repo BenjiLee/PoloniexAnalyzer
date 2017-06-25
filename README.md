@@ -62,14 +62,18 @@ Stop trading!
 >>> python poloniex.py -a CalculateFees
 
 --------------All Fees--------------
-BTC_NXT=0.0245
-BTC_ETC=0.356
-ETH_ETC=0.01
-BTC_XMR=0.0105
-BTC_DASH=0.0295
-BTC_ETH=0.143
+BTC_XEM=0.1674307131760001 BTC
+BTC_XMR=1.4045547154270002 BTC
+BTC_ZEC=0.1651144346270001 BTC
+ETH_ETC=0.8814063491250002 ETH
+USDT_BTC=27.853017370598 USDT
+-----------Total per base-----------
+BTC=1.7370998632300005
+ETH=0.8814063491250002
+USDT=27.853017370598
 -------------Total Fees-------------
-Total fees in BTC=0.5635
+Total fees in USDT=4699.607955411165
+Total fees in BTC=1.8502393525240806
 
 >>> python poloniex.py -a GetDetailedOverview
 

@@ -7,6 +7,6 @@ class TradeHistory:
         for stock in self.history:
             result[stock] = 0
             for trade in self.history[stock]:
-                result[stock] += float(trade["fee"])
+                result[stock] += float(trade["fee"]) * float(trade["total"])
         return result
 
