@@ -46,12 +46,12 @@ def get_detailed_overview():
     print("Note: The values below are for the particular currency pair you traded"
           " against. For example, if you traded BTC_ETH -> ETH_ETC -> ETC_BTC"
           "you will only see the value traded against each pair in isolation.")
-    for ticker in trade_history:
-        transaction, settlement = ticker.split("_")[0], ticker.split("_")[1]
+    for pair in trade_history:
+        transaction, settlement = pair.split("_")[0], pair.split("_")[1]
         transaction_sum = 0
         settlement_sum = 0
 
-        cross_pair = list(trade_history[ticker])
+        cross_pair = list(trade_history[pair])
         for trade in cross_pair:
             if trade['type'] == 'buy':
                 transaction_sum += float(trade["total"])
@@ -64,10 +64,10 @@ def get_detailed_overview():
                 settlement_sum -= float(trade["amount"])
 
         if settlement_sum > -1:  # Set to 0.000001 to hide 0 balances
-            transaction_equivalent = float(ticker_data.get_price(ticker)) * settlement_sum
+            transaction_equivalent = float(ticker_data.get_price(pair)) * settlement_sum
             transaction_balance = transaction_equivalent - transaction_sum
             total_usd = float("{:.4}".format(transaction_balance * ticker_data.get_price("USDT_" + transaction)))
-            print("--------------{}----------------".format(ticker))
+            print("--------------{}----------------".format(pair))
             print("Over your account's lifetime, you have invested {} {}".format(transaction_sum, transaction))
             print("to achieve your current balance of {} {}/{} {}".format(settlement_sum, settlement, transaction_equivalent, transaction))
             print("If you sold it all at the current price (assuming enough sell orders)")

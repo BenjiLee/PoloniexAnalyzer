@@ -5,11 +5,8 @@ class TickerData:
     def __init__(self):
         self.ticker_price = public_api.return_ticker()
 
-    def get_price(self, pair):
-        transaction, settlement = pair.split("_")[0], pair.split("_")[1]
-        if transaction == settlement:
-            return 1
+    def get_price(self, symbol):
         try:
-            return float(self.ticker_price[pair]["last"])
+            return float(self.ticker_price[symbol]["last"])
         except KeyError:
             return 0

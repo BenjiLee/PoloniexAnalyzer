@@ -24,14 +24,18 @@ class DWHistory:
 
     def get_btc_balance(self, ticker):
         balance = 0
-        for deposit_ticker, amount in self.deposits.items():
-            if deposit_ticker != u'BTC':
-                balance += amount * ticker.get_price(deposit_ticker)
+        for deposit_symbol, amount in self.deposits.items():
+            if deposit_symbol == u"USDT":
+                balance += amount * ticker.get_price("USDT_BTC")
+            if deposit_symbol != u'BTC':
+                balance += amount * ticker.get_price("BTC_" + deposit_symbol)
             else:
                 balance += amount
-        for withdrawal_ticker, amount in self.withdrawals.items():
-            if withdrawal_ticker != u'BTC':
-                balance -= amount * ticker.get_price(withdrawal_ticker)
+        for withdrawal_symbol, amount in self.withdrawals.items():
+            if withdrawal_symbol == u"USDT":
+                balance += amount * ticker.get_price("USDT_BTC")
+            if withdrawal_symbol != u'BTC':
+                balance -= amount * ticker.get_price("BTC_" + withdrawal_symbol)
             else:
                 balance -= amount
         return balance
