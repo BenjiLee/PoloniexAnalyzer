@@ -124,7 +124,8 @@ def _call_trading_api(post_body):
         if err.code == 403:
             print("HTTP Error 403. Are your api keys correct?")
             sys.exit(0)
-    response_dict = json.loads(response.read().decode('utf8'))
+    decoded_response = response.read().decode('utf8')
+    response_dict = json.loads(decoded_response)
     if "error" in response_dict:
         if response_dict["error"] == "Invalid API key/secret pair.":
             raise InvalidKeySecretError
