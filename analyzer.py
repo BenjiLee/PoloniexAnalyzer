@@ -41,56 +41,50 @@ def get_overview():
 
 
 def get_detailed_overview():
-    global current
     ticker_data = TickerData()
-    trade_history = trading_api.return_trade_history()
-    print("Warning! If you made non BTC trades, for example, ETH to ETC, some")
-    print("of the values may look unusual. Since non BTC trades have not been")
-    print("calculated in.")
+    trade_history = TradeHistory().history
+    print("Note: The values below are for the particular currency pair you traded"
+          " against. For example, if you traded BTC_ETH -> ETH_ETC -> ETC_BTC"
+          "you will only see the value traded against each pair in isolation.")
     for ticker in trade_history:
-        if ticker.startswith("BTC_"):
-            current = list(reversed(trade_history[ticker]))
-            btc_sum = 0
-            for trade in current:
-                if trade['type'] == 'buy':
-                    btc_sum += float(trade["total"])
-                else:
-                    # For some reason, the total for sells do not include the
-                    # fee so we include it here.
-                    btc_sum -= (float(trade["total"]) * (1 - float(trade["fee"])))
+        transaction, settlement = ticker.split("_")[0], ticker.split("_")[1]
+        transaction_sum = 0
+        settlement_sum = 0
 
-            ticker_sum = 0
-            for trade in current:
-                if trade['type'] == 'buy':
-                    ticker_sum += float(trade["amount"])  # Total
-                    ticker_sum -= float(trade["amount"]) * float(trade["fee"])  # Fee
-                else:
-                    ticker_sum -= float(trade["amount"])
-            if ticker_sum > -1:  # Set to 0.000001 to hide 0 balances
-                current_btc_sum = float(ticker_data.get_price(ticker)) * ticker_sum
-                total_btc = current_btc_sum - btc_sum
-                total_usd = float("{:.4}".format(total_btc * ticker_data.get_price("USDT_BTC")))
-                print("--------------{}----------------".format(ticker))
-                print("Over your account's lifetime, you have invested {} BTC".format(btc_sum))
-                print("to achieve your current balance of {} {}/{} BTC".format(ticker_sum, ticker.split("_")[1],
-                                                                               current_btc_sum))
-                print("If you sold it all at the current price (assuming enough sell orders)")
+        cross_pair = list(trade_history[ticker])
+        for trade in cross_pair:
+            if trade['type'] == 'buy':
+                transaction_sum += float(trade["total"])
+                settlement_sum += float(trade["amount"])  # Total
+                settlement_sum -= float(trade["amount"]) * float(trade["fee"])  # Fee
+            else:
+                # For some reason, the total for sells do not include the
+                # fee so we include it here.
+                transaction_sum -= (float(trade["total"]) * (1 - float(trade["fee"])))
+                settlement_sum -= float(trade["amount"])
 
-                if total_btc < 0:
-                    print(printer.bcolors.RED, end=' ')
-                else:
-                    print(printer.bcolors.GREEN, end=' ')
-                print("{} BTC/{} USD".format(total_btc, total_usd))
-                print(printer.bcolors.END_COLOR, end=' ')
+        if settlement_sum > -1:  # Set to 0.000001 to hide 0 balances
+            transaction_equivalent = float(ticker_data.get_price(ticker)) * settlement_sum
+            transaction_balance = transaction_equivalent - transaction_sum
+            total_usd = float("{:.4}".format(transaction_balance * ticker_data.get_price("USDT_" + transaction)))
+            print("--------------{}----------------".format(ticker))
+            print("Over your account's lifetime, you have invested {} {}".format(transaction_sum, transaction))
+            print("to achieve your current balance of {} {}/{} {}".format(settlement_sum, settlement, transaction_equivalent, transaction))
+            print("If you sold it all at the current price (assuming enough sell orders)")
 
-    return current
+            if transaction_balance < 0:
+                print(printer.bcolors.RED, end=' ')
+            else:
+                print(printer.bcolors.GREEN, end=' ')
+            print("{} {}/{} USDT".format(transaction_balance, transaction, total_usd))
+            print(printer.bcolors.END_COLOR, end=' ')
 
 
 def calculate_fees():
     # TODO Should this take in the data models or call it itself
     trade_history = TradeHistory(trading_api.return_trade_history())
     all_fees = trade_history.get_all_fees()
-    all_prices = public_api.return_ticker()
+    ticker_data = TickerData()
 
     fee_dict = defaultdict(float)
     print("--------------All Fees--------------")
@@ -108,10 +102,10 @@ def calculate_fees():
         if currency == "USDT":
             total_fees += fees
         else:
-            total_fees += float(all_prices["USDT_" + currency]['last']) * fees
+            total_fees += float(ticker_data.get_price(["USDT_" + currency]['last'])) * fees
     print("Total fees in USDT={}".format(total_fees))
     # Convert USDT to BTC for BTC total
-    print("Total fees in BTC={}".format(total_fees / float(all_prices["USDT_BTC"]['last'])))
+    print("Total fees in BTC={}".format(total_fees / float(ticker_data.get_price(["USDT_BTC"]['last']))))
 
 
 def get_change_over_time():

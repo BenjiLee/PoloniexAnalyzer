@@ -14,6 +14,8 @@ from urllib.request import urlopen
 from urllib.request import Request
 import sys
 
+import dev_utils
+import settings
 from .api_key_secret_util import get_api_key, get_api_secret
 
 api_url = "https://poloniex.com/tradingApi"
@@ -51,6 +53,8 @@ def return_deposits_withdrawals():
 
 
 def return_trade_history():
+    if settings.MOCK_API_RESPONSE:
+        return dev_utils.file_to_dict("return_trade_history.txt")
     parameters = {
         'currencyPair': 'all',
         'start': '0',

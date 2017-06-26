@@ -1,6 +1,9 @@
+from poloniex_apis import trading_api
+
+
 class TradeHistory:
-    def __init__(self, history):
-        self.history = history
+    def __init__(self):
+        self.history = trading_api.return_trade_history()
 
     def get_all_fees(self):
         result = {}
