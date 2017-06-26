@@ -82,7 +82,7 @@ def get_detailed_overview():
 
 def calculate_fees():
     # TODO Should this take in the data models or call it itself
-    trade_history = TradeHistory(trading_api.return_trade_history())
+    trade_history = TradeHistory()
     all_fees = trade_history.get_all_fees()
     ticker_data = TickerData()
 
@@ -102,10 +102,10 @@ def calculate_fees():
         if currency == "USDT":
             total_fees += fees
         else:
-            total_fees += float(ticker_data.get_price(["USDT_" + currency]['last'])) * fees
+            total_fees += float(ticker_data.get_price("USDT_" + currency)) * fees
     print("Total fees in USDT={}".format(total_fees))
     # Convert USDT to BTC for BTC total
-    print("Total fees in BTC={}".format(total_fees / float(ticker_data.get_price(["USDT_BTC"]['last']))))
+    print("Total fees in BTC={}".format(total_fees / float(ticker_data.get_price("USDT_BTC"))))
 
 
 def get_change_over_time():
