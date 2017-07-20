@@ -33,7 +33,7 @@ class DWHistory:
                 balance += amount
         for withdrawal_symbol, amount in self.withdrawals.items():
             if withdrawal_symbol == u"USDT":
-                balance += amount * ticker.get_price("USDT_BTC")
+                balance -= amount * ticker.get_price("USDT_BTC")
             if withdrawal_symbol != u'BTC':
                 balance -= amount * ticker.get_price("BTC_" + withdrawal_symbol)
             else:

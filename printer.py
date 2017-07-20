@@ -47,6 +47,10 @@ def print_dw_history(deposits, withdrawals):
     print("-----Deposit/Withdrawal History-----")
     print("------------------------------------")
     print("--Currency=Deposit-Withdrawal=Total-")
-    for currency, deposit in deposits.items():
+
+    currencies = list(deposits.keys()) + list(withdrawals.keys())
+    currencies = list(set(currencies)) # remove duplicates
+    for currency in currencies:
+        deposit = deposits[currency] if currency in deposits else 0
         withdrawal = withdrawals[currency] if currency in withdrawals else 0
         print("{}={}-{}={}".format(currency, deposit, withdrawal, deposit - withdrawal))
